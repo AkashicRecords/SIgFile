@@ -1,4 +1,4 @@
-# SigFile.ai - Your Digital Memory Keeper
+# SigFile.ai - Your AI Development Memory Keeper
 
 > "In the digital age, your development history is your most valuable asset. SigFile.ai helps you preserve it."
 
@@ -152,29 +152,57 @@ Key benefits:
 
 ## Core Features
 
-### 1. Intelligent Change Tracking
-- Automatically records changes with timestamps
-- Organizes changes by date and project
-- Maintains a clear history of modifications
-- Supports multiple project tracking
+### 1. AI Conversation Tracking
+- **Automatic Chat Logging**
+  - Captures full AI-developer conversations
+  - Preserves context and reasoning
+  - Links discussions to code changes
+  - Timestamps all interactions
 
-### 2. Smart Backup System
-- Creates automatic backups before changes
-- Organizes backups by date
-- Easy restoration of previous states
-- Version control for configuration files
+- **Decision Documentation**
+  - Records why changes were made
+  - Stores alternative approaches considered
+  - Tracks impact of decisions
+  - Maintains development context
 
-### 3. Handoff Documentation
-- Generates comprehensive handoff documents
-- Tracks chat history and decisions
-- Maintains project context
-- Supports team collaboration
+### 2. Development Change Tracking
+- **IDE Integration**
+  - Cursor IDE change tracking
+  - Local configuration backups
+  - Workspace state preservation
+  - Development environment snapshots
 
-### 4. Project-Specific Tracking
-- Separate tracking for different projects
-- Organized directory structure
-- Clear separation of concerns
-- Easy project management
+- **Change Management**
+  - Before/after state comparison
+  - Automatic backup creation
+  - Change rollback capability
+  - Configuration version control
+
+### 3. Dataset Generation
+- **Fine-tuning Dataset Export**
+  - JSONL format export
+  - Conversation pair formatting
+  - Context preservation
+  - Clean dataset generation
+
+- **Data Cleaning Options**
+  - Tag-based filtering
+  - Sensitive data removal
+  - Project-specific exports
+  - Custom data formatting
+
+### 4. Project Organization
+- **Chat-Based Organization**
+  - Separate chats by goals
+  - Group related changes
+  - Track feature development
+  - Maintain project context
+
+- **Thinking Process Documentation**
+  - AI reasoning capture
+  - Decision tree logging
+  - Impact assessment
+  - Future considerations
 
 ## Command Usage Guide
 
@@ -640,4 +668,106 @@ sigfile -p system record "Updated environment" "$env:USERPROFILE\.profile"
 
 # Backup system config
 sigfile -p system backup "system.json"
-``` 
+```
+
+## Handoff Document
+
+```markdown:handoff.md
+# SigFile.ai Development Handoff
+
+## Project Overview
+SigFile.ai was created to solve the challenge of tracking and understanding AI-assisted development changes. Its primary purpose is to preserve the context and reasoning behind code changes, making it easier for developers to understand why certain decisions were made.
+
+## Core Functionality Status
+
+### 1. AI Development Tracking
+- **Implemented:**
+  - Basic change tracking
+  - File backup system
+  - Project organization
+  
+- **Needs Implementation:**
+  - Automatic Cursor chat logging
+  - Real-time change monitoring
+  - IDE state preservation
+  - Decision context linking
+
+### 2. Dataset Generation
+- **Implemented:**
+  - Basic JSON export
+  - Project organization
+  
+- **Needs Implementation:**
+  - JSONL export for fine-tuning
+  - Data cleaning pipeline
+  - Tag-based filtering
+  - Sensitive data handling
+
+### 3. Development Context
+- **Implemented:**
+  - Basic change logging
+  - Project separation
+  
+- **Needs Implementation:**
+  - AI thinking process capture
+  - Decision tree logging
+  - Impact assessment tracking
+  - Future considerations documentation
+
+## Next Steps
+
+1. **Priority Features**
+   - Implement automatic Cursor chat logging
+   - Add real-time change monitoring
+   - Create dataset export functionality
+   - Develop thinking process documentation
+
+2. **Technical Debt**
+   - Improve error handling
+   - Add comprehensive testing
+   - Document API interfaces
+   - Create usage examples
+
+3. **Future Considerations**
+   - Integration with other IDEs
+   - Cloud backup support
+   - Team collaboration features
+   - Analytics dashboard
+
+## Development Guidelines
+
+1. **Core Principles**
+   - Prioritize context preservation
+   - Maintain clean data structure
+   - Focus on developer experience
+   - Enable future AI training
+
+2. **Code Organization**
+   - Separate AI and universal features
+   - Maintain clear interfaces
+   - Document all functions
+   - Include usage examples
+
+## Known Issues
+
+1. **Current Limitations**
+   - Manual chat logging required
+   - Limited IDE integration
+   - Basic export functionality
+   - No automatic context linking
+
+2. **Planned Solutions**
+   - Implement automatic logging
+   - Expand IDE support
+   - Enhance export features
+   - Add context automation
+
+## Contact Information
+For questions about this handoff document or the project in general, please contact the project maintainers.
+```
+
+Would you like me to:
+1. Add more detail to any section?
+2. Include specific implementation examples?
+3. Expand the technical documentation?
+4. Add more future considerations? 

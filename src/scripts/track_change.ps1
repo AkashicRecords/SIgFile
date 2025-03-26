@@ -139,6 +139,58 @@ function Initialize-SigFile {
     Write-Log "SigFile initialized successfully"
 }
 
+function Track-AISession {
+    param(
+        [string]$ChatName,
+        [string]$Provider = "cursor",
+        [string]$Goal
+    )
+    
+    $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    $sessionDir = Join-Path $SIGFILE_DIR "ai_sessions" $ChatName $timestamp
+    
+    # Create session metadata
+    $metadata = @{
+        ChatName = $ChatName
+        Provider = $Provider
+        Goal = $Goal
+        StartTime = $timestamp
+        Changes = @()
+    } | ConvertTo-Json
+
+    # Create session directory and save metadata
+    New-Item -ItemType Directory -Path $sessionDir -Force | Out-Null
+    $metadata | Out-File -FilePath (Join-Path $sessionDir "session.json")
+    
+    Write-Log "Started AI session: $ChatName with goal: $Goal"
+    return $sessionDir
+}
+
+function Add-AIChange {
+    param(
+        [string]$ChatName,
+        [string]$SessionDir,
+        [string]$Description,
+        [string]$Files
+    )
+    
+    $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    $changeFile = Join-Path $SessionDir "changes_$timestamp.md"
+    
+    @"
+# AI-Assisted Change
+- Chat: $ChatName
+- Time: $timestamp
+- Description: $Description
+- Files Changed: $Files
+
+## Context
+$(Get-Content (Join-Path $SessionDir "session.json") | ConvertFrom-Json | Select-Object -ExpandProperty Goal)
+"@ | Out-File -FilePath $changeFile
+    
+    Write-Log "Recorded AI change in session: $ChatName"
+}
+
 # Main script
 param(
     [string]$Command,
@@ -149,7 +201,9 @@ param(
     [string]$ChatId,
     [string]$Summary,
     [string]$NextSteps,
-    [string]$Date
+    [string]$Date,
+    [string]$Goal,
+    [switch]$AISession
 )
 
 switch ($Command) {
@@ -180,6 +234,21 @@ switch ($Command) {
         }
         New-Handoff -ChatName $ChatName -ChatId $ChatId -Summary $Summary -NextSteps $NextSteps -Project $Project
     }
+    "start-ai-session" {
+        if (-not $ChatName -or -not $Goal) {
+            Write-Log "Please provide chat name and goal" "ERROR"
+            exit 1
+        }
+        $sessionDir = Track-AISession -ChatName $ChatName -Goal $Goal
+        Write-Log "AI session directory: $sessionDir"
+    }
+    "record-ai-change" {
+        if (-not $ChatName -or -not $Description -or -not $Files) {
+            Write-Log "Please provide chat name, description, and files" "ERROR"
+            exit 1
+        }
+        Add-AIChange -ChatName $ChatName -Description $Description -Files $Files
+    }
     default {
         Write-Host @"
 Usage: .\track_change.ps1 [command] [options]
@@ -190,6 +259,8 @@ Commands:
   record -Description "desc" -Files "files"  Record a change
   history [-Date YYYYMMDD] Show change history
   handoff -ChatName "name" -ChatId "id" -Summary "sum" -NextSteps "steps"  Generate handoff
+  start-ai-session -ChatName "name" -Goal "goal"  Start a new AI session
+  record-ai-change -ChatName "name" -Description "desc" -Files "files"  Record an AI-assisted change
 
 Options:
   -Project <name>          Project name (default: default)
