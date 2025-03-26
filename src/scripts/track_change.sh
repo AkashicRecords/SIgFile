@@ -4,8 +4,9 @@
 # This script helps track and manage changes to development environments
 
 # Configuration
-SIGFILE_DIR="$HOME/.sigfile"
-CONFIG_DIR="$SIGFILE_DIR/config"
+SIGFILE_DIR="$(pwd)"
+PROJECT_NAME="logiclens"  # Default project, can be overridden with -p flag
+CONFIG_DIR="$SIGFILE_DIR/tracked_projects/$PROJECT_NAME"
 CHANGES_DIR="$CONFIG_DIR/changes"
 BACKUPS_DIR="$CONFIG_DIR/backups"
 HANDOFF_DIR="$CONFIG_DIR/handoffs"
@@ -152,44 +153,57 @@ setup() {
 }
 
 # Main script
-case "$1" in
+while getopts "p:" opt; do
+    case $opt in
+        p) PROJECT_NAME="$OPTARG";;
+        \?) echo "Invalid option -$OPTARG" >&2; exit 1;;
+    esac
+done
+
+# Update config directory based on project
+CONFIG_DIR="$SIGFILE_DIR/tracked_projects/$PROJECT_NAME"
+CHANGES_DIR="$CONFIG_DIR/changes"
+BACKUPS_DIR="$CONFIG_DIR/backups"
+HANDOFF_DIR="$CONFIG_DIR/handoffs"
+
+case "${@:$OPTIND:1}" in
     "backup")
-        if [ -z "$2" ]; then
+        if [ -z "${@:$OPTIND+1:1}" ]; then
             log "ERROR: Please provide a file to backup"
-            echo "Usage: $0 backup <file>"
+            echo "Usage: $0 [-p project_name] backup <file>"
             exit 1
         fi
-        create_backup "$2" "$(basename "$2")"
+        create_backup "${@:$OPTIND+1:1}" "$(basename "${@:$OPTIND+1:1}")"
         ;;
     "record")
-        if [ -z "$2" ] || [ -z "$3" ]; then
+        if [ -z "${@:$OPTIND+1:1}" ] || [ -z "${@:$OPTIND+2:1}" ]; then
             log "ERROR: Please provide description and files changed"
-            echo "Usage: $0 record \"description\" \"files_changed\""
+            echo "Usage: $0 [-p project_name] record \"description\" \"files_changed\""
             exit 1
         fi
-        record_change "$2" "$3"
+        record_change "${@:$OPTIND+1:1}" "${@:$OPTIND+2:1}"
         ;;
     "history")
-        show_history "$2"
+        show_history "${@:$OPTIND+1:1}"
         ;;
     "handoff")
-        if [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ] || [ -z "$5" ]; then
+        if [ -z "${@:$OPTIND+1:1}" ] || [ -z "${@:$OPTIND+2:1}" ] || [ -z "${@:$OPTIND+3:1}" ] || [ -z "${@:$OPTIND+4:1}" ]; then
             log "ERROR: Please provide all required handoff information"
-            echo "Usage: $0 handoff \"chat_name\" \"chat_id\" \"summary\" \"next_steps\""
+            echo "Usage: $0 [-p project_name] handoff \"chat_name\" \"chat_id\" \"summary\" \"next_steps\""
             exit 1
         fi
-        generate_handoff "$2" "$3" "$4" "$5"
+        generate_handoff "${@:$OPTIND+1:1}" "${@:$OPTIND+2:1}" "${@:$OPTIND+3:1}" "${@:$OPTIND+4:1}"
         ;;
     "setup")
         setup
         ;;
     *)
         echo "Usage:"
-        echo "  $0 setup                    # Initialize SigFile"
-        echo "  $0 backup <file>           # Create backup of a file"
-        echo "  $0 record \"description\" \"files\"    # Record a change"
-        echo "  $0 history [YYYYMMDD]      # Show change history"
-        echo "  $0 handoff \"chat_name\" \"chat_id\" \"summary\" \"next_steps\"  # Generate handoff document"
+        echo "  $0 [-p project_name] setup                    # Initialize SigFile"
+        echo "  $0 [-p project_name] backup <file>           # Create backup of a file"
+        echo "  $0 [-p project_name] record \"description\" \"files\"    # Record a change"
+        echo "  $0 [-p project_name] history [YYYYMMDD]      # Show change history"
+        echo "  $0 [-p project_name] handoff \"chat_name\" \"chat_id\" \"summary\" \"next_steps\"  # Generate handoff document"
         exit 1
         ;;
 esac 
