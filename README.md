@@ -150,7 +150,7 @@ Key benefits:
    - Keep related changes together
    - Regular cleanup of old backups
 
-## Core Features
+## Using SigFile With An Integrated AI Coding Assistant 
 
 ### 1. AI Conversation Tracking
 - **Automatic Chat Logging**
@@ -765,9 +765,3 @@ SigFile.ai was created to solve the challenge of tracking and understanding AI-a
 ## Contact Information
 For questions about this handoff document or the project in general, please contact the project maintainers.
 ```
-
-Would you like me to:
-1. Add more detail to any section?
-2. Include specific implementation examples?
-3. Expand the technical documentation?
-4. Add more future considerations? 
