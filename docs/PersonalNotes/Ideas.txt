@@ -1,0 +1,19 @@
+Ideas :
+Add set up script for each IDE.and integration script for each IDE.
+
+Add Tests and integrate LogicLens with SigFile.
+
+Add Entrprise features  
+- permissions managemnt
+- user managemnt
+- role based access control
+- audit logs
+- activity logs
+- integration with other enterprise systems
+-admin dashboard
+-reporting and analytics
+-customizable workflows
+-multi-factor authentication
+-two-factor authentication
+-single sign-on
+    ``

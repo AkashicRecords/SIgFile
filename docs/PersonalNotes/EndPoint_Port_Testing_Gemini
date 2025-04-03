@@ -1,0 +1,170 @@
+'''How to Use:
+
+Save: Save the code above as test_api_routes.py in your project directory (or a dedicated tests/ folder).
+
+Configure: Crucially, edit the BACKEND_BASE_URL, OLLAMA_HOST, OLLAMA_PORT, and EXPECTED_ENDPOINTS list at the top of the script to match your actual setup and API design. Be thorough listing all the routes your frontend or extension are supposed to call.
+
+Run Services: Make sure your Python backend service AND your Ollama service are running.
+
+Run Pytest: Open your terminal in the directory where you saved the file (or your project root) and run the command:
+
+pytest -v test_api_routes.py
+Use code with caution.
+Bash
+-v provides verbose output, showing each test function name and result.
+
+3. Interpreting the Results:
+
+PASS: Everything looks okay from a reachability and basic routing perspective.
+
+FAIL on test_backend_service_reachability: Your Python backend isn't running or isn't listening on the configured BACKEND_BASE_URL port.
+
+FAIL on test_ollama_service_reachability: The Ollama service isn't running or isn't listening on the configured port.
+
+FAIL on test_endpoint_existence_and_methods:
+
+AssertionError: Expected endpoint ... to exist, but got 404 Not Found: This means your backend doesn't have a route defined for that specific path and method. Check your Flask/FastAPI route definitions for typos or missing routes.
+
+AssertionError: Expected ... to be disallowed (405 or 404), but got 200 (or other codes): This means a route is incorrectly responding to an HTTP method it shouldn't be (e.g., a GET request works on an endpoint only meant for POST). Check the methods=[...] argument in your route definition.
+
+ConnectionError: The backend service stopped running during the test, or there's a network issue.
+
+Timeout: The backend service is running but took too long to respond (might be overloaded or stuck).
+
+Benefits:
+
+Automated: Run it anytime you make changes to your API routes.
+
+Diagnostic: Failures point directly to potential problems (service down, missing route, wrong method).
+
+Regression Testing: Catches accidental deletions or modifications of existing routes.
+
+Documentation: The EXPECTED_ENDPOINTS list acts as a basic form of API documentation.
+
+Remember to keep the EXPECTED_ENDPOINTS list up-to-date as you add, remove, or modify routes in your backend! This script will be a valuable tool for maintaining sanity during development.'''
+
+
+
+
+
+import pytest
+import requests
+import socket
+import time
+
+# --- Configuration ---
+# ## ---vvv--- EDIT THESE VALUES ---vvv--- ##
+
+# Base URL of your running Python backend service
+BACKEND_BASE_URL = "http://localhost:5000" # Or http://127.0.0.1:5000, or whatever port you use
+
+# Host and Port for the Ollama service
+OLLAMA_HOST = "127.0.0.1"
+OLLAMA_PORT = 11434
+
+# List of expected API endpoints: (path, allowed_methods)
+# - path should start with '/'
+# - allowed_methods is a list of uppercase HTTP methods (e.g., ['GET', 'POST'])
+EXPECTED_ENDPOINTS = [
+    # --- Backend API Endpoints ---
+    ("/api/status", ["GET"]),
+    ("/api/summarize", ["POST"]),
+    ("/api/transcribe", ["POST"]),
+    ("/api/get_summary/<job_id>", ["GET"]), # Example with path parameter
+    # ('/api/some_other_endpoint', ['GET', 'PUT']), # Add all your routes here
+
+    # --- Potentially add routes expected by the Extension if they hit the backend directly ---
+    # ('/ext/some_action', ['POST']),
+
+]
+
+# --- End of Configuration ---
+
+
+# --- Helper Function ---
+def is_port_open(host, port, timeout=1):
+    """Checks if a TCP port is open and listening."""
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(timeout)
+    try:
+        result = sock.connect_ex((host, port))
+        return result == 0
+    except socket.gaierror: # Hostname resolution error
+        return False
+    except socket.error: # Other socket errors
+        return False
+    finally:
+        sock.close()
+
+# --- Tests ---
+
+@pytest.fixture(scope="module", autouse=True)
+def wait_for_services():
+    """Fixture to wait briefly for services to potentially start."""
+    print("\nWaiting a moment for services to potentially initialize...")
+    time.sleep(2) # Adjust if your services take longer to start
+
+def test_backend_service_reachability():
+    """Tests if the backend service port is open."""
+    host = BACKEND_BASE_URL.split('//')[1].split(':')[0]
+    port = int(BACKEND_BASE_URL.split(':')[-1])
+    print(f"\nChecking Backend reachability at {host}:{port}...")
+    assert is_port_open(host, port), f"Backend service not reachable at {host}:{port}. Is it running?"
+    print(f"Backend port {port} appears open.")
+
+def test_ollama_service_reachability():
+    """Tests if the Ollama service port is open."""
+    print(f"\nChecking Ollama reachability at {OLLAMA_HOST}:{OLLAMA_PORT}...")
+    assert is_port_open(OLLAMA_HOST, OLLAMA_PORT), f"Ollama service not reachable at {OLLAMA_HOST}:{OLLAMA_PORT}. Is it running?"
+    print(f"Ollama port {OLLAMA_PORT} appears open.")
+
+@pytest.mark.parametrize("path, allowed_methods", EXPECTED_ENDPOINTS)
+def test_endpoint_existence_and_methods(path, allowed_methods):
+    """
+    Tests each defined endpoint.
+    1. Checks if allowed methods don't return 404.
+    2. Checks if common disallowed methods return 405 or 404.
+    """
+    base_url = BACKEND_BASE_URL.rstrip('/')
+    url = f"{base_url}{path}"
+
+    # Replace path parameters with a dummy value for testing existence
+    if "<" in url and ">" in url:
+         url = url.split("<")[0] + "test_param" # Simple replacement heuristic
+
+    print(f"\nTesting Endpoint: {path} (Allowed: {allowed_methods}) -> {url}")
+
+    # Test allowed methods
+    for method in allowed_methods:
+        print(f"  Checking allowed method: {method}...")
+        try:
+            response = requests.request(method, url, timeout=5, json={"test": "data"} if method in ['POST', 'PUT', 'PATCH'] else None)
+            print(f"    -> Status Code: {response.status_code}")
+            # We accept anything EXCEPT 404, as other errors (500, 400, 405) mean the route *exists* but failed
+            assert response.status_code != 404, f"Expected endpoint {method} {url} to exist, but got 404 Not Found."
+            # Optional stricter check (if you expect 2xx on basic calls)
+            # assert response.ok or response.status_code in [400, 405, 500], f"Unexpected status {response.status_code} for {method} {url}"
+        except requests.exceptions.ConnectionError as e:
+            pytest.fail(f"ConnectionError for {method} {url}: {e}. Is the backend running?")
+        except requests.exceptions.Timeout:
+             pytest.fail(f"Timeout for {method} {url}. Is the backend responsive?")
+        except Exception as e:
+            pytest.fail(f"Unexpected error during {method} {url}: {e}")
+
+    # Test common disallowed methods
+    common_methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
+    disallowed_methods = [m for m in common_methods if m not in allowed_methods]
+
+    for method in disallowed_methods:
+        print(f"  Checking disallowed method: {method}...")
+        try:
+            response = requests.request(method, url, timeout=5)
+            print(f"    -> Status Code: {response.status_code}")
+            # We expect 405 Method Not Allowed, but 404 is also acceptable if the path isn't defined *at all* for this method
+            assert response.status_code in [405, 404], f"Expected {method} {url} to be disallowed (405 or 404), but got {response.status_code}."
+        except requests.exceptions.ConnectionError as e:
+             pytest.fail(f"ConnectionError for {method} {url}: {e}. Is the backend running?")
+        except requests.exceptions.Timeout:
+             pytest.fail(f"Timeout for {method} {url}. Is the backend responsive?")
+        except Exception as e:
+            pytest.fail(f"Unexpected error during {method} {url}: {e}")

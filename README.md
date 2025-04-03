@@ -1,105 +1,75 @@
-# SigFile.ai - Your Digital Memory Keeper
+# SigFile - AI Development Memory Keeper
 
-> "In the digital age, your development history is your most valuable asset. SigFile.ai helps you preserve it."
+SigFile is a Python-based tool designed to maintain a comprehensive record of your development process, including configuration changes, code modifications, and chat handoffs.
 
-## What is SigFile?
+## Quick Links
+- [Documentation Index](docs/README.md)
+- [Installation Guide](docs/getting-started/installation.md)
+- [Basic Usage](docs/getting-started/basic-usage.md)
 
-SigFile.ai is more than just a change tracking system - it's your digital memory keeper. It helps you maintain a clear, organized history of your development environment changes, making it easy to track, understand, and roll back modifications when needed.
+## Version Compatibility
+- Python: 3.8 or higher
+- Operating Systems:
+  - Windows 10/11
+  - macOS 10.15+
+  - Linux (Ubuntu 20.04+, RHEL 8+)
 
-## Core Features
-
-### 1. Intelligent Change Tracking
-- Automatically records changes with timestamps
-- Organizes changes by date and project
-- Maintains a clear history of modifications
-- Supports multiple project tracking
-
-### 2. Smart Backup System
-- Creates automatic backups before changes
-- Organizes backups by date
-- Easy restoration of previous states
-- Version control for configuration files
-
-### 3. Handoff Documentation
-- Generates comprehensive handoff documents
-- Tracks chat history and decisions
-- Maintains project context
-- Supports team collaboration
-
-### 4. Project-Specific Tracking
-- Separate tracking for different projects
-- Organized directory structure
-- Clear separation of concerns
-- Easy project management
+## Key Features
+- 🤖 **AI Development Tracking**: Capture and document AI-assisted development changes
+- 🔄 **Change Management**: Track and backup configuration changes
+- 📝 **Change History**: Maintain detailed history with timestamps
+- 📋 **Handoff Documentation**: Generate comprehensive handoff documents
+- 📁 **Project-Specific Tracking**: Support for multiple projects
+- 🌐 **Cross-Platform**: Works on any operating system
 
 ## Quick Start
 
+1. **Install**:
 ```bash
-# Initialize SigFile
-./src/scripts/track_change.sh setup
+git clone https://github.com/yourusername/sigfile.git
+cd sigfile
+pip install -r requirements.txt
+```
 
+2. **Setup**:
+```bash
+python src/scripts/track_change.py setup
+```
+
+3. **Basic Usage**:
+```bash
 # Record a change
-./src/scripts/track_change.sh record "description" "files_changed"
+python src/scripts/track_change.py record "description" "files_changed"
 
-# Create a backup
-./src/scripts/track_change.sh backup <file>
+# View history
+python src/scripts/track_change.py history
 
-# Show change history
-./src/scripts/track_change.sh history [YYYYMMDD]
-
-# Generate handoff document
-./src/scripts/track_change.sh handoff "chat_name" "chat_id" "summary" "next_steps"
+# Create backup
+python src/scripts/track_change.py backup "path/to/file"
 ```
 
-## Project Structure
+## Upcoming Features
+- 🧪 **Unit Testing**: Comprehensive test suite for core functionality
+- 🔍 **Enhanced AI Sessions**: Improved session tracking and analysis
+- 📊 **Analytics Dashboard**: Visual representation of development patterns
+- 🔄 **Real-time Change Detection**: Automatic change detection and recording
+- 🔐 **Enhanced Security**: Improved handling of sensitive data
+- 🔗 **Integration Capabilities**: Connect with other development tools
+- 📝 **Git Integration**: Track commits, pushes, and branch changes automatically
 
-```
-sigfile/
-├── src/
-│   └── scripts/
-│       └── track_change.sh    # Main tracking script
-├── tracked_projects/          # Projects being tracked
-│   └── logiclens/            # LogicLens project tracking
-│       ├── changes/          # Change logs
-│       │   └── YYYYMMDD/     # Organized by date
-│       ├── backups/          # File backups
-│       │   └── YYYYMMDD/     # Organized by date
-│       └── handoffs/         # Handoff documents
-│           └── YYYYMMDD/     # Organized by date
-└── [configuration files]
-```
+## Next Steps
+1. Test current release thoroughly
+2. Fix any bugs or issues found
+3. Implement unit testing framework
+4. Enhance error handling and logging
+5. Improve documentation coverage
+6. Add basic security features
 
-## Future Vision
-
-### Planned Features
-- AI-powered change analysis
-- Automated rollback suggestions
-- Integration with popular IDEs
-- Cloud backup support
-- Team collaboration features
-
-### Use Cases
-- Development environment management
-- Configuration tracking
-- Team handoffs
-- Project history preservation
-- Disaster recovery
-
-## Dependencies
-
-- moreutils (for timestamp functionality)
-- zsh shell
+## Documentation
+For detailed documentation, please visit our [Documentation Index](docs/README.md).
 
 ## Contributing
-
-We welcome contributions! Please see our contributing guidelines for more information.
+We welcome contributions! Please see our [Contributing Guide](docs/contributing/development.md) for details.
 
 ## License
-
-MIT License - See LICENSE file for details.
-
-## Acknowledgments
-
-- Inspired by the need for better development environment management
-- Built with modern shell scripting best practices
-- Designed for developer productivity 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 

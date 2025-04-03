@@ -1,0 +1,31 @@
+{
+  "decision_id": "py37-compat",
+  "project_name": "logiclens",
+  "timestamp": "20250402_165411",
+  "date": "2025-04-02",
+  "description": "Adapt SigFile for Python 3.7",
+  "rationale": "Needed to ensure compatibility with existing Python 3.7 installation",
+  "alternatives": [
+    "Update to Python 3.8+",
+    "Create separate 3.7 branch",
+    "Modify requirements"
+  ],
+  "impact": {
+    "impact": "Reduced dependencies but maintained core functionality",
+    "scope": "requirements.txt and documentation"
+  },
+  "code_changes": {
+    "files": [
+      "requirements.txt",
+      "README.md"
+    ]
+  },
+  "related_decisions": [],
+  "implementation_plan": {
+    "steps": [],
+    "timeline": "TBD",
+    "resources": [],
+    "risks": []
+  },
+  "success_criteria": []
+}

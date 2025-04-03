@@ -1,0 +1,159 @@
+SigFile - Agile Project Management Plan (Solo Developer)
+
+1. Introduction
+
+This plan outlines the development of SigFile using Agile methodologies, adapted for a solo developer.
+
+Key Consideration: As a solo developer, focus, prioritization, and managing scope are critical. Task switching has a high overhead. Time estimates are rough and include a buffer.
+
+Time Adjustment: All timeline estimates derived from task sizing will be doubled to provide a more realistic forecast for solo development.
+
+2. Phases & Milestones
+
+(Refer to Phased Rollout in Design Document)
+
+Milestone 1: Alpha Release (Core CLI, JSON storage, basic Git link) - Target: End of Sprint 3
+
+Milestone 2: Beta Release (SQLite, Enhanced Schema, GPG Sign/Verify, Telemetry) - Target: End of Sprint 8
+
+Milestone 3: V1.0 Release (Customer Deploy Package, Basic RAG Agent, Semantic Search) - Target: End of Sprint 16
+
+Milestone 4: V2.0 Release (Proactive Agent Logic, Enterprise Features) - Target: End of Sprint 26+ (Highly tentative)
+
+3. Epics (Major Feature Areas)
+
+EPIC-CLI: Core Command Line Interface Functionality
+
+EPIC-STORE: Data Storage and Schema
+
+EPIC-GIT: Git Integration
+
+EPIC-SEARCH: Search and Retrieval Functionality
+
+EPIC-SIGN: Digital Signature Integration (GPG initially)
+
+EPIC-TEST: Unit and Integration Testing
+
+EPIC-DOCS: Documentation (README, Usage Guides)
+
+EPIC-TELEMETRY: Anonymized Telemetry Collection
+
+EPIC-DEPLOY: Packaging and Deployment (Local -> Customer-Hosted)
+
+EPIC-API: Customer-Hosted Retrieval API
+
+EPIC-AGENT: AI Agent Logic (IDE Integration, RAG, Proactive)
+
+EPIC-ENT: Enterprise Features (RBAC, SSO, Admin)
+
+EPIC-UX: User Experience and UI (CLI, future IDE/Web)
+
+4. Initial Task Breakdown & T-Shirt Sizes (Example for Phase 1 & 2)
+
+(T-Shirt Sizes: S: ~1-2 days, M: ~3-5 days, L: ~1-2 weeks, XL: ~2-4+ weeks)
+
+Sprint 1 (Focus: Basic CLI & Storage)
+
+[EPIC-CLI] Setup project structure, virtual env, basic dependencies (S)
+
+[EPIC-CLI] Implement argparse for initial add command structure (S)
+
+[EPIC-STORE] Design initial JSON schema v0.1 (S)
+
+[EPIC-STORE] Implement basic JSON loading/saving function (S)
+
+[EPIC-CLI] Implement core add logic: write entry to JSON (M)
+
+[EPIC-DOCS] Create initial README.md structure (S)
+
+Sprint 2 (Focus: Git Linking & Basic Find)
+
+[EPIC-GIT] Implement subprocess call to get commit hash for a file (M)
+
+[EPIC-CLI] Integrate commit hash into add command entry (S)
+
+[EPIC-TEST] Write basic unit test for JSON load/save (S)
+
+[EPIC-CLI] Implement basic find command structure (S)
+
+[EPIC-SEARCH] Implement find logic by exact file path match (M)
+
+[EPIC-DOCS] Add basic Usage section to README (S)
+
+Sprint 3 (Focus: Alpha Polish & Testing)
+
+[EPIC-CLI] Add tagging support to add command (--tags) (M)
+
+[EPIC-SEARCH] Implement find logic by tag (M)
+
+[EPIC-TEST] Write unit tests for add and find commands (L)
+
+[EPIC-TEST] Setup basic Git repo in tests for commit hash testing (M)
+
+[EPIC-DOCS] Finalize README for Alpha release (S)
+
+Milestone: Alpha Release
+
+Sprint 4 (Focus: Schema Refinement & UUIDs)
+
+[EPIC-STORE] Redesign JSON schema v0.2 (add decision_type, task_id, etc.) (M)
+
+[EPIC-STORE] Implement UUIDs for entry_id (S)
+
+[EPIC-STORE] Write migration script/logic if needed for existing alpha users (M)
+
+[EPIC-CLI] Update add command for new schema fields (M)
+
+Sprint 5 (Focus: GPG Integration - Sign)
+
+[EPIC-SIGN] Research GPG command-line interaction/libraries (Python GPGME etc.) (M)
+
+[EPIC-SIGN] Implement optional --sign flag for add command using system GPG (L)
+
+[EPIC-STORE] Add digital_signature and author_public_key_ref fields to schema (S)
+
+[EPIC-TEST] Design approach for testing signing (requires GPG setup) (M)
+
+Sprint 6 (Focus: GPG Integration - Verify & Search)
+
+[EPIC-SIGN] Implement sigfile verify [entry_id] command (L)
+
+[EPIC-SEARCH] Implement find by task_id (M)
+
+[EPIC-SEARCH] Implement find by author_id (assuming key ref can be used) (M)
+
+[EPIC-TEST] Implement tests for signing/verification (may need mocking/fixtures) (L)
+
+Sprint 7 (Focus: SQLite Backend & Telemetry)
+
+[EPIC-STORE] Implement optional SQLite backend using sqlite3 module (L)
+
+[EPIC-CLI] Add config option/arg to select storage backend (S)
+
+[EPIC-TELEMETRY] Design basic anonymous telemetry payload (counts, errors) (M)
+
+[EPIC-TELEMETRY] Implement opt-in telemetry sending (HTTPS POST) (M)
+
+Sprint 8 (Focus: Beta Polish & Docs)
+
+[EPIC-CLI] General CLI usability improvements based on self-use (M)
+
+[EPIC-DOCS] Update documentation for Beta features (SQLite, Signing, Telemetry) (L)
+
+[EPIC-TEST] Increase test coverage across features (L)
+
+Milestone: Beta Release
+
+(Subsequent sprints would follow the Design Document Phases for V1.0 and V2.0, breaking down Epics like EPIC-DEPLOY, EPIC-API, EPIC-AGENT, EPIC-ENT into L/XL tasks)
+
+5. Timeline (Solo Developer - DOUBLED Estimates)
+
+Alpha Release (Milestone 1): Target: ~6 Sprints = ~3 Months
+
+Beta Release (Milestone 2): Target: Alpha + ~10 Sprints = ~8 Months Total
+
+V1.0 Release (Milestone 3): Target: Beta + ~16 Sprints = ~16 Months Total (Potentially ~1.5 years)
+
+V2.0 Release (Milestone 4): Target: V1.0 + ~20 Sprints = ~26 Months Total (Potentially ~2.5 - 3 years+)
+
+Disclaimer: This timeline is highly speculative for a solo project. Progress depends heavily on focus, unforeseen challenges, learning curves (AI, enterprise features), and external factors. Doubling is a heuristic; reality could be faster or slower. Consistent effort and ruthless prioritization are key. Future team expansion would accelerate later phases.
