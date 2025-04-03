@@ -1,5 +1,7 @@
 # SigFile - AI Development Memory Keeper
 
+> "In the digital age, your development history is your most valuable asset. SigFile helps you preserve it."
+
 SigFile is a Python-based tool designed to maintain a comprehensive record of your development process, including configuration changes, code modifications, and chat handoffs.
 
 ## Quick Links
@@ -21,6 +23,28 @@ SigFile is a Python-based tool designed to maintain a comprehensive record of yo
 - 📋 **Handoff Documentation**: Generate comprehensive handoff documents
 - 📁 **Project-Specific Tracking**: Support for multiple projects
 - 🌐 **Cross-Platform**: Works on any operating system
+
+## Use Cases
+
+1. **Development Environments**
+   - Track IDE settings and configurations
+   - Monitor development environment changes
+   - Document tool-specific customizations
+
+2. **Project Management**
+   - Track project configuration changes
+   - Monitor dependency updates
+   - Document architectural decisions
+
+3. **System Administration**
+   - Track system configuration changes
+   - Monitor environment setup modifications
+   - Document infrastructure changes
+
+4. **Documentation**
+   - Track documentation updates
+   - Monitor README changes
+   - Document API modifications
 
 ## Quick Start
 
@@ -72,4 +96,4 @@ For detailed documentation, please visit our [Documentation Index](docs/README.m
 We welcome contributions! Please see our [Contributing Guide](docs/contributing/development.md) for details.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
