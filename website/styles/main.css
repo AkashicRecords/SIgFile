@@ -1,0 +1,90 @@
+/* Updates Section Styles */
+.updates-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.update-item {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.update-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.update-type {
+    text-transform: capitalize;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.update-type.documentation {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.update-type.feature {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.update-type.improvement {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.update-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.update-description {
+    margin: 0 0 1rem 0;
+    color: #666;
+    line-height: 1.5;
+}
+
+.update-link {
+    display: inline-block;
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.update-link:hover {
+    text-decoration: underline;
+}
+
+.error {
+    color: #d32f2f;
+    padding: 1rem;
+    background-color: #ffebee;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .updates-section {
+        padding: 1rem;
+    }
+    
+    .update-item {
+        padding: 1rem;
+    }
+    
+    .update-title {
+        font-size: 1.1rem;
+    }
+} 
