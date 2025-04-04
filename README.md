@@ -1,13 +1,13 @@
 # SigFile
 
-A Python tool for tracking development processes, including documentation review and updates.
-
 ## Project Information
 
-**Identifier**: sigfile  
-**Version**: 1.0.0  
-**Published**: 2024-03-16, 12:00:00  
-**Last Released**: 2024-03-16, 12:00:00
+**Identifier**: shd101wyy.markdown-preview-enhanced  
+**Version**: 0.8.18  
+**Published**: 2017-06-12, 17:43:02  
+**Last Released**: 2025-03-16, 06:57:29
+
+A Python tool for tracking development processes, including documentation review and updates.
 
 ## Description
 
