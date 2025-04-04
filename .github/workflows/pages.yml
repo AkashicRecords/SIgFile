@@ -21,8 +21,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      
       - name: Setup Pages
         uses: actions/configure-pages@v3
+      
+      - name: Clean website directory
+        run: |
+          rm -rf website/*
+          rm -f website/.nojekyll
+          rm -f website/_config.yml
+      
+      - name: Copy website files
+        run: |
+          cp -r src/website/* website/
+          touch website/.nojekyll
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
