@@ -1,52 +1,62 @@
-# SigFile
+# SigFile CLI
 
-A Python tool for tracking development processes, including documentation review and updates.
+A command-line interface for the SigFile development process tracking tool.
 
 ## Project Information
 
-**Identifier**: sigfile  
+**Identifier**: sigfile-cli  
 **Version**: 1.0.0  
-**Published**: 2024-03-16, 12:00:00  
-**Last Released**: 2024-03-16, 12:00:00
+**Published**: 2024-04-03  
+**Last Released**: 2024-04-03
 
 ## Description
 
-SigFile is a development process tracking tool that helps teams manage documentation review and updates. It provides a structured way to track changes, manage handoffs, and maintain project documentation.
+SigFile CLI is the command-line interface component of the SigFile development process tracking tool. It provides a convenient way to interact with SigFile's core functionality through the terminal.
 
 ## Features
 
-- Virtual environment management with consistent naming
-- Documentation tracking and versioning
-- Change tracking and logging
+- Command-line interface for SigFile operations
+- Development environment management
+- Decision tracking and documentation
 - Cross-platform support (Windows, macOS, Linux)
 
 ## Installation
 
-See the [Installation Guide](docs/getting-started/installation.md) for detailed setup instructions.
+1. Clone the repository:
+   ```zsh
+   git clone https://github.com/AkashicRecords/SigFile-CLI.git
+   cd SigFile-CLI
+   ```
+
+2. Create and activate the virtual environment:
+   ```zsh
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. Install the package:
+   ```zsh
+   pip install -e .
+   ```
 
 ## Usage
 
-1. Create and activate the virtual environment:
-   ```zsh
-   python3 -m venv Sigfile
-   source Sigfile/bin/activate
-   ```
+See the [User Guide](docs/user_guide.md) for detailed usage instructions.
 
-2. Install dependencies:
-   ```zsh
-   pip install -r requirements.txt
-   ```
+Basic commands:
+```zsh
+# Track a decision
+sigfile decision --project "my-project" --type "architecture" --description "Decision description"
 
-3. Start tracking changes:
-   ```zsh
-   python src/scripts/track_change.py
-   ```
+# Manage development environment
+sigfile devenv --action create --name "my-env"
+```
 
 ## Documentation
 
-- [Installation Guide](docs/getting-started/installation.md)
-- [User Guide](docs/user-guide/README.md)
-- [Troubleshooting](docs/troubleshooting/common-issues.md)
+- [User Guide](docs/user_guide.md)
+- [Developer Guide](docs/developer_guide.md)
+- [Architecture](docs/architecture.md)
 
 ## Contributing
 

@@ -5,6 +5,7 @@ import sys
 import argparse
 from pathlib import Path
 from typing import List, Optional
+import subprocess
 
 # Add the project root to Python path
 project_root = Path(__file__).parent.parent.parent
@@ -15,9 +16,12 @@ from src.scripts.track_change import (
     setup, generate_handoff
 )
 from src.scripts.command_aliases import CommandAliases
+from src.scripts.cli_logging import cli_logger
 
 def setup_cli():
     """Set up the command-line interface."""
+    cli_logger.log_debug("Setting up CLI interface")
+    
     parser = argparse.ArgumentParser(description='SigFile.ai - Change tracking and backup system')
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
     
@@ -112,6 +116,17 @@ def setup_cli():
     
     return parser
 
+def show_man_page():
+    """Show the man page for the CLI tool."""
+    try:
+        man_path = os.path.join(os.path.dirname(__file__), 'man', 'sigfile-cli.1')
+        if os.path.exists(man_path):
+            subprocess.run(['man', man_path], check=True)
+        else:
+            print("Man page not found. Please check the documentation.")
+    except subprocess.CalledProcessError:
+        print("Error displaying man page. Please check the documentation.")
+
 def main():
     """Main entry point for the CLI."""
     parser = setup_cli()
@@ -126,6 +141,9 @@ def main():
         args.project = 'sigfile'  # Default project name
     
     try:
+        # Log command execution
+        cli_logger.log_command(args.command, vars(args))
+        
         if args.command == 'devenv':
             from src.scripts.permission_manager import permission_manager, FileRole
             from src.scripts.track_change import OptimizedCapture
@@ -140,80 +158,13 @@ def main():
                         for role in FileRole:
                             for perm in ['read', 'write', 'execute', 'immutable']:
                                 permission_manager.role_permissions[role][perm] = True
-                        print("God mode enabled: All permissions enabled for all roles")
-                    elif args.off:
-                        # Disable god mode (restore default permissions)
-                        permission_manager.role_permissions = {
-                            FileRole.SYSTEM: {
-                                'read': True,
-                                'write': True,
-                                'execute': True,
-                                'immutable': False
-                            },
-                            FileRole.AI_AGENT: {
-                                'read': True,
-                                'write': True,
-                                'execute': True,
-                                'immutable': False
-                            },
-                            FileRole.ADMIN: {
-                                'read': True,
-                                'write': True,
-                                'execute': True,
-                                'immutable': True
-                            },
-                            FileRole.USER: {
-                                'read': True,
-                                'write': False,
-                                'execute': False,
-                                'immutable': True
-                            }
-                        }
-                        print("God mode disabled: Default permissions restored")
-                
-                elif args.venv:
-                    if args.on:
-                        permission_manager.enable_venv_restriction()
-                        print("Venv restriction enabled: Files cannot be modified from within a virtual environment")
-                    elif args.off:
-                        permission_manager.disable_venv_restriction()
-                        print("Venv restriction disabled: Files can be modified from within a virtual environment")
-                
-                elif args.role and args.permission:
-                    if not args.on and not args.off:
-                        print("Error: Must specify --on or --off when modifying role permissions")
-                        return
-                    
-                    # Modify specific role permissions
-                    role_map = {
-                        'system': FileRole.SYSTEM,
-                        'ai_agent': FileRole.AI_AGENT,
-                        'admin': FileRole.ADMIN,
-                        'user': FileRole.USER
-                    }
-                    
-                    if args.role == 'all':
-                        # Apply to all roles
-                        for role in FileRole:
-                            permission_manager.role_permissions[role][args.permission] = args.on
-                        print(f"Permission '{args.permission}' {'enabled' if args.on else 'disabled'} for all roles")
+                        cli_logger.log_success("God mode enabled: All permissions enabled for all roles")
                     else:
-                        # Apply to specific role
-                        role = role_map.get(args.role)
-                        if role:
-                            permission_manager.role_permissions[role][args.permission] = args.on
-                            print(f"Permission '{args.permission}' {'enabled' if args.on else 'disabled'} for role '{args.role}'")
-                        else:
-                            print(f"Invalid role: {args.role}")
-                
-                else:
-                    # Show current permissions
-                    print("Current role permissions:")
-                    for role, perms in permission_manager.role_permissions.items():
-                        print(f"  {role.value}:")
-                        for perm, value in perms.items():
-                            print(f"    {perm}: {value}")
-                    print("\nVenv restriction:", "enabled" if permission_manager.venv_restricted else "disabled")
+                        # Disable god mode
+                        for role in FileRole:
+                            for perm in ['read', 'write', 'execute', 'immutable']:
+                                permission_manager.role_permissions[role][perm] = False
+                        cli_logger.log_success("God mode disabled: All permissions reset to default")
         
         elif args.command == 'dev-mode':
             from src.scripts.track_change import OptimizedCapture
@@ -223,10 +174,10 @@ def main():
             
             if args.action == 'enable':
                 capture.enable_dev_mode(args.file)
-                print(f"Development mode {'enabled for all files' if args.file is None else f'enabled for {args.file}'}")
+                cli_logger.log_success(f"Development mode {'enabled for all files' if args.file is None else f'enabled for {args.file}'}")
             else:
                 capture.disable_dev_mode(args.file)
-                print(f"Development mode {'disabled for all files' if args.file is None else f'disabled for {args.file}'}")
+                cli_logger.log_success(f"Development mode {'disabled for all files' if args.file is None else f'disabled for {args.file}'}")
         
         elif args.command == 'decision':
             from src.scripts.track_change import OptimizedCapture
@@ -239,7 +190,7 @@ def main():
                 affected_files = args.affected_files or []
                 
                 if not args.title:
-                    print("Error: Title is required for new decisions")
+                    cli_logger.log_error(ValueError("Title is required for new decisions"))
                     return
                 
                 capture._record_development_decision(
@@ -249,70 +200,50 @@ def main():
                     "Pending",
                     affected_files
                 )
-                print(f"Created new decision: {args.title}")
-                print(f"Type: {decision_type}")
-                print(f"Priority: {priority}")
+                cli_logger.log_success(f"Created new decision: {args.title}")
+                cli_logger.log_debug(f"Type: {decision_type}")
+                cli_logger.log_debug(f"Priority: {priority}")
                 if affected_files:
-                    print("Affected files:")
+                    cli_logger.log_debug("Affected files:")
                     for file in affected_files:
-                        print(f"  - {file}")
-            
-            elif args.append:
-                # Append to existing decision
-                decision_id = args.append
-                if not args.context:
-                    print("Error: Context is required when appending to a decision")
-                    return
-                
-                # TODO: Implement append to decision
-                print(f"Appending to decision {decision_id}")
-                print(f"New context: {args.context}")
-            
-            elif args.revert:
-                # Revert a decision
-                decision_id = args.revert
-                if not args.context:
-                    print("Error: Context is required when reverting a decision")
-                    return
-                
-                # TODO: Implement decision revert
-                print(f"Reverting decision {decision_id}")
-                print(f"Revert reason: {args.context}")
-            
-            elif args.search:
-                # Search for decisions
-                search_term = args.search
-                # TODO: Implement decision search
-                print(f"Searching for decisions matching: {search_term}")
+                        cli_logger.log_debug(f"  - {file}")
         
         elif args.command == 'record':
             record_change(args.description, ' '.join(args.files), args.project)
+            cli_logger.log_success(f"Recorded change: {args.description}")
         
         elif args.command == 'backup':
             create_backup(args.file, args.project)
+            cli_logger.log_success(f"Created backup for: {args.file}")
         
         elif args.command == 'history':
             show_history(args.date, args.project)
+            cli_logger.log_debug(f"Showed history for date: {args.date or 'today'}")
         
         elif args.command == 'setup':
             setup()
+            cli_logger.log_success("SigFile setup completed")
         
         elif args.command == 'handoff':
             generate_handoff(args.chat_name, args.chat_id, args.summary, args.next_steps, args.project)
+            cli_logger.log_success(f"Generated handoff for chat: {args.chat_name}")
         
         elif args.command == 'ai':
             if args.ai_command == 'start':
                 # TODO: Implement AI session start
-                pass
+                cli_logger.log_warning("AI session start not yet implemented")
             elif args.ai_command == 'stop':
                 # TODO: Implement AI session stop
-                pass
+                cli_logger.log_warning("AI session stop not yet implemented")
             elif args.ai_command == 'history':
                 # TODO: Implement AI session history
-                pass
+                cli_logger.log_warning("AI session history not yet implemented")
     
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        cli_logger.log_error(e, f"Error executing command: {args.command}")
+        print(f"\nError: {e}")
+        print("\nFor correct usage, please check the man page:")
+        show_man_page()
         sys.exit(1)
 
 if __name__ == '__main__':

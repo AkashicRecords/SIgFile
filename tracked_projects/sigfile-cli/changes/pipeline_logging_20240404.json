@@ -1,0 +1,98 @@
+{
+  "type": "change",
+  "title": "Development Pipeline and Logging Implementation",
+  "description": "Implementation of development pipeline and enhanced logging system for SigFile-CLI.",
+  "timestamp": "2024-04-04T00:00:00",
+  "version": "0.1.0",
+  "author": "AI Assistant",
+  "changes": [
+    {
+      "file": "setup.py",
+      "type": "modify",
+      "description": "Updated setup.py with development and release configurations",
+      "changes": [
+        "Added development and release build detection",
+        "Separated dependencies into common, dev, and release",
+        "Added package data configuration",
+        "Implemented build optimization options"
+      ]
+    },
+    {
+      "file": "config/build_config.py",
+      "type": "add",
+      "description": "Created build configuration file",
+      "changes": [
+        "Added common configuration",
+        "Added development configuration",
+        "Added release configuration",
+        "Implemented configuration selection logic"
+      ]
+    },
+    {
+      "file": ".github/workflows/development.yml",
+      "type": "add",
+      "description": "Created development workflow",
+      "changes": [
+        "Added multi-python version testing",
+        "Implemented linting and type checking",
+        "Added security scanning",
+        "Added development package build"
+      ]
+    },
+    {
+      "file": ".github/workflows/release.yml",
+      "type": "add",
+      "description": "Created release workflow",
+      "changes": [
+        "Added release package build",
+        "Implemented security scanning",
+        "Added performance testing",
+        "Added PyPI publishing"
+      ]
+    },
+    {
+      "file": "src/scripts/track_change.py",
+      "type": "modify",
+      "description": "Updated logging configuration",
+      "changes": [
+        "Implemented development-friendly logging",
+        "Added console and file handlers",
+        "Configured log levels and formats",
+        "Added debug capabilities"
+      ]
+    }
+  ],
+  "dependencies": [
+    "typer>=0.4.0",
+    "rich>=10.12.0",
+    "python-dotenv>=0.19.0",
+    "pyyaml>=5.4.1",
+    "click>=8.0.3",
+    "prompt_toolkit>=3.0.20",
+    "pygments>=2.10.0",
+    "python-dateutil>=2.8.2",
+    "pytz>=2021.1"
+  ],
+  "related_decisions": [
+    "002_packaging_strategy.md",
+    "001_enhanced_logging.md"
+  ],
+  "testing": {
+    "unit_tests": [
+      "Test build configuration loading",
+      "Test logging configuration",
+      "Test development workflow",
+      "Test release workflow"
+    ],
+    "integration_tests": [
+      "Test development build process",
+      "Test release build process",
+      "Test logging functionality"
+    ]
+  },
+  "documentation": [
+    "docs/development_pipeline.md",
+    "docs/version_compatibility.md",
+    "docs/installation.md"
+  ]
+} 

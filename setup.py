@@ -1,91 +1,89 @@
 from setuptools import setup, find_packages
+import os
+import sys
+
+# Determine if this is a development or release build
+is_dev_build = os.environ.get('SIGFILE_DEV_BUILD', '0') == '1'
+
+# Common dependencies
+install_requires = [
+    "typer>=0.4.0",
+    "rich>=10.12.0",
+    "python-dotenv>=0.19.0",
+    "pyyaml>=5.4.1",
+    "click>=8.0.3",
+    "prompt_toolkit>=3.0.20",
+    "pygments>=2.10.0",
+    "python-dateutil>=2.8.2",
+    "pytz>=2021.1",
+]
+
+# Development-specific dependencies
+dev_requires = [
+    "pytest>=7.4.4",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.10.0",
+    "coverage>=7.2.7",
+    "black>=22.3.0",
+    "isort>=5.10.1",
+    "flake8>=4.0.1",
+    "mypy>=0.950",
+    "pre-commit>=2.20.0",
+    "bandit>=1.7.0",  # Security scanning
+    "safety>=2.3.5",  # Dependency security checking
+]
+
+# Release-specific dependencies
+release_requires = [
+    "pyinstaller>=5.0.0",  # For creating standalone executables
+    "cython>=0.29.24",     # For performance optimization
+]
+
+# Package data
+package_data = {
+    'sigfile_cli': [
+        'templates/*',
+        'config/*',
+    ]
+}
+
+# Entry points
+entry_points = {
+    "console_scripts": [
+        "sigfile=sigfile_cli.cli:app",
+    ],
+}
+
+# Development-specific configurations
+if is_dev_build:
+    print("Building development version...")
+    # Add development-specific package data
+    package_data['sigfile_cli'].extend([
+        'tests/*',
+        'docs/*',
+    ])
+    # Add development-specific entry points
+    entry_points["console_scripts"].extend([
+        "sigfile-dev=sigfile_cli.cli:dev_app",
+    ])
 
 setup(
-    name="sigfile",
+    name="sigfile-cli",
     version="0.1.0",
     packages=find_packages(),
-    install_requires=[
-        "watchdog>=2.1.0",
-        "python-dotenv>=0.19.0",
-        "requests>=2.26.0",
-        "psutil>=5.8.0",
-        "pyyaml>=5.4.1",
-        "rich>=10.12.0",
-        "typer>=0.4.0",
-        "pydantic>=1.8.2",
-        "python-multipart>=0.0.5",
-        "aiohttp>=3.8.1",
-        "websockets>=10.0",
-        "cryptography>=3.4.7",
-        "python-jose>=3.3.0",
-        "passlib>=1.7.4",
-        "bcrypt>=3.2.0",
-        "python-dateutil>=2.8.2",
-        "pytz>=2021.1",
-        "tqdm>=4.62.3",
-        "colorama>=0.4.4",
-        "click>=8.0.3",
-        "prompt_toolkit>=3.0.20",
-        "pygments>=2.10.0",
-        "jinja2>=3.0.1",
-        "markdown>=3.3.4",
-        "pyyaml>=5.4.1",
-        "jsonschema>=3.2.0",
-        "python-magic>=0.4.24",
-        "chardet>=4.0.0",
-        "beautifulsoup4>=4.9.3",
-        "lxml>=4.6.3",
-        "pillow>=8.3.2",
-    ],
+    install_requires=install_requires,
     extras_require={
-        "test": [
-            "pytest>=7.4.4",
-            "pytest-cov>=4.1.0",
-            "pytest-mock>=3.10.0",
-            "pytest-asyncio>=0.21.1",
-            "pytest-timeout>=2.1.0",
-            "pytest-xdist>=3.3.1",
-            "pytest-benchmark>=3.4.1",
-            "pytest-randomly>=3.13.0",
-            "pytest-sugar>=0.9.7",
-            "pytest-html>=3.2.0",
-            "pytest-rerunfailures>=11.1.2",
-            "pytest-skip-slow>=0.5.0",
-            "pytest-watch>=4.2.0",
-            "pytest-clarity>=1.0.1",
-            "pytest-pythonpath>=0.7.4",
-            "pytest-env>=0.8.1",
-            "pytest-dotenv>=0.5.2",
-            "coverage>=7.2.7",
-        ],
-        "dev": [
-            "black>=22.3.0",
-            "isort>=5.10.1",
-            "flake8>=4.0.1",
-            "mypy>=0.950",
-            "pylint>=2.14.5",
-            "bandit>=1.7.4",
-            "safety>=2.3.5",
-            "pre-commit>=2.20.0",
-            "tox>=3.25.1",
-            "bump2version>=1.0.1",
-            "twine>=3.8.0",
-            "build>=0.10.0",
-            "check-manifest>=0.47",
-            "pyroma>=3.0",
-            "restview>=3.2.0",
-            "docutils>=0.18.1",
-            "sphinx>=4.5.0",
-            "sphinx-rtd-theme>=1.0.0",
-        ],
+        "dev": dev_requires,
+        "release": release_requires,
     },
+    package_data=package_data,
     python_requires=">=3.7",
     author="Sam Elder",
     author_email="samelder@example.com",
-    description="A tool for tracking changes and managing backups",
+    description="Command-line interface for the SigFile development process tracking tool",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/samelder/sigfile",
+    url="https://github.com/AkashicRecords/SigFile-CLI",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
@@ -97,4 +95,17 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
     ],
+    entry_points=entry_points,
+    # Release-specific configurations
+    options={
+        'build': {
+            'optimize': 2 if not is_dev_build else 0,  # Optimize bytecode for release
+        },
+        'bdist_wheel': {
+            'universal': True,
+        },
+    },
+    # Security and IP protection
+    zip_safe=False,  # Prevent direct access to source files
+    include_package_data=True,
 ) 

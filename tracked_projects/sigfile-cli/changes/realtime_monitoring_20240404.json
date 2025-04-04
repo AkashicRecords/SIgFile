@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "record_id": "change_20240404_0004",
+    "record_type": "change",
+    "timestamp": "2024-04-04T00:00:00Z",
+    "author": "AI Assistant",
+    "project": "sigfile-cli",
+    "version": "1.0",
+    "status": "in_progress",
+    "tags": ["monitoring", "cli", "performance"],
+    "related_records": ["decision_013_realtime_monitoring"]
+  },
+  "content": {
+    "description": "Implementation of real-time SigFile activity monitoring",
+    "purpose": "To provide real-time visibility into SigFile operations and performance",
+    "impact": "Improved monitoring and debugging capabilities",
+    "changes": {
+      "src/scripts/cli/monitor.py": "Added monitor command for real-time activity tracking",
+      "src/scripts/models/activity_tracker.py": "Added ActivityTracker for monitoring SigFile processes",
+      "src/scripts/models/monitor.py": "Added SigFileMonitor for real-time display",
+      "docs/guides/monitoring.md": "Created monitoring guide"
+    },
+    "testing": "Manual testing of monitoring features",
+    "verification": "Monitoring system provides accurate real-time data",
+    "affected_files": [
+      "src/scripts/cli/monitor.py",
+      "src/scripts/models/activity_tracker.py",
+      "src/scripts/models/monitor.py",
+      "docs/guides/monitoring.md"
+    ]
+  }
+} 

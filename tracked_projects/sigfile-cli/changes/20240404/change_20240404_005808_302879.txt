@@ -1,0 +1,3 @@
+Description: Created decision record for Cursor traffic proxy implementation
+Files Changed: tracked_projects/sigfile-cli/decisions/006_cursor_proxy_implementation.md
+Timestamp: 20240404_005808_302879

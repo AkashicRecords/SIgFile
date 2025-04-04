@@ -1,0 +1,46 @@
+.TH SIGFILE-DEVENV 1 "April 2024" "SigFile CLI" "User Commands"
+.SH NAME
+sigfile-cli devenv \- Manage development environment settings
+.SH SYNOPSIS
+.B sigfile-cli devenv
+\fICOMMAND\fR [\fIOPTIONS\fR]
+.SH DESCRIPTION
+Manage development environment settings and permissions.
+.SH COMMANDS
+.TP
+.B permissions
+Manage development environment permissions
+.SH OPTIONS
+.TP
+.B --god-mode
+Enable/disable god mode (all permissions)
+.TP
+.B --venv
+Enable/disable venv restriction
+.TP
+.B --role
+Role to modify permissions for (system, ai_agent, admin, user, all)
+.TP
+.B --permission
+Permission to modify (read, write, execute, immutable)
+.TP
+.B --on
+Enable the specified permission
+.TP
+.B --off
+Disable the specified permission
+.TP
+.B --project
+Specify project name (default: sigfile)
+.SH EXAMPLES
+.TP
+Enable god mode:
+.B sigfile-cli devenv permissions --god-mode --on
+.TP
+Modify role permissions:
+.B sigfile-cli devenv permissions --role admin --permission write --on
+.SH SEE ALSO
+.BR sigfile-cli (1),
+.BR sigfile-record (1)
+.SH AUTHOR
+SigFile Development Team 

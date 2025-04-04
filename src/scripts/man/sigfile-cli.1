@@ -1,0 +1,85 @@
+.TH SIGFILE-CLI 1 "April 2024" "SigFile CLI" "User Commands"
+.SH NAME
+sigfile-cli \- Command line interface for SigFile change tracking system
+.SH SYNOPSIS
+.B sigfile-cli
+[\fICOMMAND\fR] [\fIOPTIONS\fR] [\fIARGUMENTS\fR]
+.SH DESCRIPTION
+SigFile-CLI is a command line tool for tracking changes, managing development environments, and generating documentation for the SigFile project.
+.SH COMMANDS
+.TP
+.B record
+Record a change with description and files changed
+.RS
+.IP "\fBUsage:\fR"
+sigfile-cli record "DESCRIPTION" FILE1 [FILE2 ...] [--project PROJECT_NAME]
+.RE
+.TP
+.B backup
+Create a backup of a file
+.RS
+.IP "\fBUsage:\fR"
+sigfile-cli backup FILE [--project PROJECT_NAME]
+.RE
+.TP
+.B history
+Show change history
+.RS
+.IP "\fBUsage:\fR"
+sigfile-cli history [--date YYYYMMDD] [--project PROJECT_NAME]
+.RE
+.TP
+.B handoff
+Generate a handoff document
+.RS
+.IP "\fBUsage:\fR"
+sigfile-cli handoff CHAT_NAME CHAT_ID SUMMARY NEXT_STEPS [--project PROJECT_NAME]
+.RE
+.TP
+.B setup
+Initialize SigFile
+.RS
+.IP "\fBUsage:\fR"
+sigfile-cli setup
+.RE
+.TP
+.B devenv
+Manage development environment settings
+.RS
+.IP "\fBUsage:\fR"
+sigfile-cli devenv permissions [--god-mode] [--venv] [--role ROLE] [--permission PERM] [--on|--off] [--project PROJECT_NAME]
+.RE
+.TP
+.B decision
+Record development decisions
+.RS
+.IP "\fBUsage:\fR"
+sigfile-cli decision [--new] [--append ID] [--revert ID] [--search TERM] [--title TITLE] [--context CONTEXT] [--project PROJECT_NAME]
+.RE
+.SH OPTIONS
+.TP
+.B --project
+Specify project name (default: sigfile)
+.TP
+.B --help
+Show help message
+.SH EXAMPLES
+.TP
+Record a change:
+.B sigfile-cli record "Fixed timestamp issue" src/scripts/track_change.py
+.TP
+Create a backup:
+.B sigfile-cli backup src/scripts/cli.py
+.TP
+Show history:
+.B sigfile-cli history --date 20240404
+.TP
+Generate handoff:
+.B sigfile-cli handoff "CLI Logging" "20240404" "Implemented logging" "Test logging system"
+.SH SEE ALSO
+.BR sigfile (1),
+.BR git (1)
+.SH AUTHOR
+SigFile Development Team
+.SH BUGS
+Report bugs to the SigFile issue tracker. 

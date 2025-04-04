@@ -18,32 +18,45 @@ import stat
 from .permission_manager import permission_manager
 from enum import Enum
 
-# Configure logging
-logger = logging.getLogger('track_change')
-logger.setLevel(logging.DEBUG)
+# Configure logging for development
+def setup_logging():
+    """Set up logging configuration for development."""
+    # Create logs directory if it doesn't exist
+    logs_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
+    os.makedirs(logs_dir, exist_ok=True)
 
-# Create logs directory if it doesn't exist
-logs_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
-os.makedirs(logs_dir, exist_ok=True)
+    # Create logger
+    logger = logging.getLogger('sigfile')
+    logger.setLevel(logging.DEBUG)
 
-# File handler - using 'w' mode to overwrite existing logs
-log_file = os.path.join(logs_dir, 'track_change.log')
-file_handler = logging.FileHandler(log_file, mode='w')
-file_handler.setLevel(logging.DEBUG)
+    # Clear any existing handlers
+    logger.handlers = []
 
-# Console handler
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.INFO)
+    # Console handler with color formatting
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.DEBUG)
+    console_formatter = logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(message)s',
+        datefmt='%H:%M:%S'
+    )
+    console_handler.setFormatter(console_formatter)
+    logger.addHandler(console_handler)
 
-# Create formatters and add it to the handlers
-log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-formatter = logging.Formatter(log_format)
-file_handler.setFormatter(formatter)
-console_handler.setFormatter(formatter)
+    # File handler for detailed logs
+    log_file = os.path.join(logs_dir, 'track_change.log')
+    file_handler = logging.FileHandler(log_file, mode='w')
+    file_handler.setLevel(logging.DEBUG)
+    file_formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+    file_handler.setFormatter(file_formatter)
+    logger.addHandler(file_handler)
 
-# Add the handlers to the logger
-logger.addHandler(file_handler)
-logger.addHandler(console_handler)
+    return logger
+
+# Initialize logger
+logger = setup_logging()
 
 # Import AI tracking modules
 try:
@@ -109,7 +122,12 @@ def get_config_dirs(project_name):
 def get_timestamp():
     """Get current timestamp in YYYYMMDD_HHMMSS_MMMMMM format."""
     try:
-        return datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+        now = datetime.now()
+        # Ensure we're using the correct year
+        if now.year != 2024:
+            logger.warning(f"System year is {now.year}, adjusting to 2024")
+            now = now.replace(year=2024)
+        return now.strftime('%Y%m%d_%H%M%S_%f')
     except Exception as e:
         logger.error(f"Error generating timestamp: {str(e)}")
         raise
@@ -120,13 +138,20 @@ def log(message):
     print(f"[{timestamp}] {message}")
 
 def make_immutable(file_path):
-    """Make a file immutable by setting it to read-only."""
+    """Make a file immutable."""
+    logger.debug(f"Attempting to make {file_path} immutable")
     try:
-        # Set file to read-only for all users (0o444)
-        os.chmod(file_path, 0o444)
-        logger.debug(f"Made file immutable: {file_path}")
+        current_mode = os.stat(file_path).st_mode
+        logger.debug(f"Current file mode: {current_mode}")
+        
+        # Remove write permissions
+        new_mode = stat.S_IREAD | stat.S_IRGRP | stat.S_IROTH
+        logger.debug(f"New file mode: {new_mode}")
+        
+        os.chmod(file_path, new_mode)
+        logger.debug(f"Successfully changed file mode")
     except Exception as e:
-        logger.error(f"Error making file immutable: {str(e)}")
+        logger.error(f"Error in _make_immutable: {str(e)}")
         raise
 
 def make_mutable(file_path):
@@ -436,250 +461,47 @@ class OptimizedCapture:
         # Initialize file roles dictionary
         self.file_roles = {}
         
-        # Set up logging
-        self._setup_logging()
-        
-        # Initialize components
-        self._initialize_components()
-        
-        # Set up role-based permissions
-        self._setup_role_permissions()
-        
         # Set up directories
         self._setup_directories()
         
-        # Set up development environment permissions
-        self._setup_dev_environment()
+        # Initialize components
+        self._initialize_components()
     
-    def _setup_role_permissions(self):
-        """Set up role-based permissions for project files."""
-        try:
-            # Create base project directory if it doesn't exist
-            os.makedirs(self.project_dir, exist_ok=True)
-            
-            # Grant role access to project files
-            for root, _, files in os.walk(self.project_dir):
-                for file in files:
-                    file_path = os.path.join(root, file)
-                    
-                    # Initialize empty set for file roles if not exists
-                    if file_path not in self.file_roles:
-                        self.file_roles[file_path] = set()
-                    
-                    try:
-                        # Grant SYSTEM role access
-                        self.file_roles[file_path].add(FileRole.SYSTEM)
-                        self._record_permission_change(file_path, FileRole.SYSTEM, "granted")
-                        
-                        # Grant AI_AGENT role access to AI-related directories
-                        if any(ai_dir in root for ai_dir in ['ai_conversations', 'thinking']):
-                            self.file_roles[file_path].add(FileRole.AI_AGENT)
-                            self._record_permission_change(file_path, FileRole.AI_AGENT, "granted")
-                        
-                        # Grant ADMIN role access
-                        self.file_roles[file_path].add(FileRole.ADMIN)
-                        self._record_permission_change(file_path, FileRole.ADMIN, "granted")
-                        
-                        # Grant USER role read-only access
-                        self.file_roles[file_path].add(FileRole.USER)
-                        self._record_permission_change(file_path, FileRole.USER, "granted")
-                        
-                    except Exception as e:
-                        self.logger.error(f"Failed to grant role access: {str(e)}")
-            
-            self.logger.info("Role-based permissions set up successfully")
-            
-        except Exception as e:
-            self.logger.error(f"Error setting up role-based permissions: {str(e)}", exc_info=True)
-            raise
-    
-    def _make_immutable(self, file_path: str):
-        """Make a file immutable using role-based permissions."""
-        try:
-            # Grant system role access temporarily
-            permission_manager.elevate_permissions(file_path, FileRole.SYSTEM)
-            
-            # Apply immutable flags
-            if sys.platform == 'linux':
-                subprocess.run(['chattr', '+i', file_path], check=True)
-            elif sys.platform == 'darwin':
-                subprocess.run(['chflags', 'uchg', file_path], check=True)
-            elif sys.platform == 'win32':
-                subprocess.run(['attrib', '+R', '+S', '+H', file_path], check=True)
-            
-            # Set read-only permissions
-            os.chmod(file_path, stat.S_IREAD | stat.S_IRGRP | stat.S_IROTH)
-            
-            # Revoke elevated permissions
-            permission_manager.revoke_role_access(file_path, FileRole.SYSTEM)
-            
-            self.logger.info(f"Made file immutable: {file_path}")
-            
-        except Exception as e:
-            self.logger.error(f"Error making file immutable: {str(e)}", exc_info=True)
-            raise
-
     def _setup_directories(self):
-        """Set up project directories with immutable protection."""
+        """Set up project directories."""
         try:
             # Create base project directory
-            project_dir = os.path.join('tracked_projects', self.project_name)
-            os.makedirs(project_dir, exist_ok=True)
+            os.makedirs(self.project_dir, exist_ok=True)
+            self.logger.info(f"Created project directory: {self.project_dir}")
             
-            # Define directory structure with descriptions
-            directories = {
-                'changes': 'Contains daily change records and change history',
-                'backups': 'Stores backup copies of changed files',
-                'logs': 'Contains system and change tracking logs',
-                'docs': 'Project documentation and file structure info',
-                'ai_conversations': 'Stores AI interaction records',
-                'thinking': 'Contains AI thinking process records',
-                'handoffs': 'Stores handoff records between systems',
-                'decisions': 'Records development decisions and changes in direction'
-            }
-            
-            # Create directories and their README files
-            for dir_name, description in directories.items():
-                dir_path = os.path.join(project_dir, dir_name)
+            # Create subdirectories
+            for dir_name in ['changes', 'backups', 'logs', 'ai_conversations', 'thinking']:
+                dir_path = os.path.join(self.project_dir, dir_name)
                 os.makedirs(dir_path, exist_ok=True)
+                self.logger.info(f"Created directory: {dir_path}")
                 
-                # Create .gitkeep to preserve empty directories
-                gitkeep_path = os.path.join(dir_path, '.gitkeep')
-                with open(gitkeep_path, 'w') as f:
-                    f.write('')
-                self._make_immutable(gitkeep_path)
-                
-                # Create README.txt for each directory
-                readme_path = os.path.join(dir_path, 'README.txt')
-                with open(readme_path, 'w') as f:
-                    f.write(f"# {dir_name.title()} Directory\n\n")
-                    f.write(f"Purpose: {description}\n\n")
-                    f.write("This directory is protected with immutable flags.\n")
-                self._make_immutable(readme_path)
+        except Exception as e:
+            self.logger.error(f"Error setting up directories: {e}")
+            raise
+    
+    def _initialize_components(self):
+        """Initialize tracking components."""
+        try:
+            # Initialize AI tracking
+            self.ai_tracker = AITracking(self.project_name)
+            self.logger.info("Initialized AI tracking")
             
-            # Create main documentation files
-            docs_dir = os.path.join(project_dir, 'docs')
+            # Initialize decision tracking
+            self.decision_tracker = DecisionTracker(self.project_name)
+            self.logger.info("Initialized decision tracking")
             
-            # Create file_structure.txt
-            structure_path = os.path.join(docs_dir, 'file_structure.txt')
-            with open(structure_path, 'w') as f:
-                f.write("# SigFile Project Structure\n\n")
-                for dir_name, description in directories.items():
-                    f.write(f"## {dir_name.title()}\n")
-                    f.write(f"{description}\n\n")
-            self._make_immutable(structure_path)
-            
-            # Create development history file
-            decisions_dir = os.path.join(project_dir, 'decisions')
-            history_path = os.path.join(decisions_dir, 'development_history.txt')
-            with open(history_path, 'w') as f:
-                f.write("# Development History\n\n")
-                f.write("## Initial Setup - " + datetime.now().strftime("%B %d, %Y") + "\n\n")
-                f.write("1. Created project structure with immutable protection\n")
-                f.write("2. Set up decision tracking system\n")
-                f.write("3. Established development history recording\n")
-            self._make_immutable(history_path)
-            
-            # Create main README.txt
-            readme_path = os.path.join(project_dir, 'README.txt')
-            with open(readme_path, 'w') as f:
-                f.write("# SigFile Project\n\n")
-                f.write("## Development Process\n")
-                f.write("This project tracks the complete development process, including:\n")
-                f.write("- Initial attempts and approaches\n")
-                f.write("- Changes in direction\n")
-                f.write("- Failed attempts and lessons learned\n")
-                f.write("- Successful implementations\n\n")
-                f.write("## Protection Methods\n")
-                f.write("- Unix/Linux: chmod 444 + chattr +i\n")
-                f.write("- macOS: chmod 444 + chflags uchg\n")
-                f.write("- Windows: attrib +R +S +H + ACL restrictions\n\n")
-                f.write("## Directory Structure\n")
-                for dir_name, description in directories.items():
-                    f.write(f"- {dir_name}: {description}\n")
-            self._make_immutable(readme_path)
-            
-            # Record initial setup decision
-            self._record_development_decision(
-                "Initial Setup",
-                "Created project structure with decision tracking",
-                "Setting up the initial project structure to capture development process",
-                "Successfully implemented directory structure with immutable protection"
-            )
-            
-            # Verify directory permissions
-            self._verify_directory_permissions(project_dir)
-            
-            logger.info(f"Successfully set up project directories with immutable protection for {self.project_name}")
+            # Initialize file watcher
+            self.file_watcher = FileWatcher(self.project_name)
+            self.logger.info("Initialized file watcher")
             
         except Exception as e:
-            logger.error(f"Error setting up directories: {str(e)}", exc_info=True)
+            self.logger.error(f"Error initializing components: {e}")
             raise
-
-    def _get_file_structure_doc(self):
-        """Get the file structure documentation content."""
-        return '''# SigFile Project Structure Documentation
-
-## Root Directory Structure
-/
-├── src/                    # Source code directory
-│   └── scripts/           # Python scripts
-│       ├── track_change.py # Main change tracking functionality
-│       └── file_watcher.py # File watching and change detection
-├── tests/                 # Test files
-│   └── test_track_change.py # Unit tests for change tracking
-├── tracked_projects/      # Project-specific tracked data
-│   └── sigfile/          # SigFile project data
-│       ├── changes/      # Recorded file changes
-│       ├── backups/      # File backups
-│       ├── logs/         # Application logs
-│       └── docs/         # Project documentation'''
-
-    def _get_change_history_doc(self):
-        """Get the change history documentation content."""
-        return f'''# Change History - {datetime.now().strftime('%Y-%m-%d')}
-
-## File Structure Changes
-1. Created tracked_projects/sigfile/docs/file_structure.txt
-   - Added comprehensive documentation of project structure
-   - Documented file purposes and contents
-   - Added change tracking format specifications
-
-2. Implemented immutable file protection
-   - Added OS-specific file protection
-   - Protected all documentation and change records
-   - Enhanced data preservation'''
-
-    def _get_main_readme(self):
-        """Get the main README content."""
-        return '''# SigFile Project Documentation
-
-This directory contains immutable project documentation and change history.
-These files cannot be modified or deleted to ensure project history preservation.
-
-## Protection Methods
-- Unix/Linux: chmod (0o444) + chattr (+i)
-- macOS: chmod (0o444) + chflags (uchg)
-- Windows: attrib (+R +S +H) + ACL restrictions
-
-## Directory Structure
-- changes/: Recorded file changes
-- backups/: File backups
-- logs/: Application logs
-- docs/: Project documentation
-- ai_conversations/: AI interaction records
-- thinking/: Thought process records
-- handoffs/: Project handoff records'''
-
-    def _setup_logging(self):
-        """Set up logging for the capture system."""
-        # This method is empty as the original _setup_logging method is not provided in the new class
-        pass
-
-    def _initialize_components(self):
-        """Initialize all components for the capture system."""
-        # This method is empty as the original _initialize_components method is not provided in the new class
-        pass
 
     def start_capture(self):
         """Start the capture system."""

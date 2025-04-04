@@ -1,0 +1,51 @@
+.TH SIGFILE-DECISION 1 "April 2024" "SigFile CLI" "User Commands"
+.SH NAME
+sigfile-cli decision \- Record development decisions
+.SH SYNOPSIS
+.B sigfile-cli decision
+[\fIOPTIONS\fR]
+.SH DESCRIPTION
+Record, append, revert, or search for development decisions.
+.SH OPTIONS
+.TP
+.B -n, --new
+Create a new decision
+.TP
+.B -a, --append
+Append to an existing decision by ID
+.TP
+.B -r, --revert
+Revert a decision by ID
+.TP
+.B -s, --search
+Search for decisions by keyword
+.TP
+.B -t, --title
+Decision title (required for new decisions)
+.TP
+.B -c, --context
+Decision context
+.TP
+.B --type
+Type of decision (architectural, implementation, security, performance, user_experience)
+.TP
+.B --priority
+Priority of the decision (high, medium, low)
+.TP
+.B --affected-files
+Files affected by this decision
+.TP
+.B --project
+Specify project name (default: sigfile)
+.SH EXAMPLES
+.TP
+Create a new decision:
+.B sigfile-cli decision --new --title "Implement Logging" --context "Add logging system" --type implementation --priority high
+.TP
+Search for decisions:
+.B sigfile-cli decision --search "logging"
+.SH SEE ALSO
+.BR sigfile-cli (1),
+.BR sigfile-record (1)
+.SH AUTHOR
+SigFile Development Team 

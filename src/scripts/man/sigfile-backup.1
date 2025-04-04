@@ -1,0 +1,21 @@
+.TH SIGFILE-BACKUP 1 "April 2024" "SigFile CLI" "User Commands"
+.SH NAME
+sigfile-cli backup \- Create a backup of a file
+.SH SYNOPSIS
+.B sigfile-cli backup
+\fIFILE\fR [\fIOPTIONS\fR]
+.SH DESCRIPTION
+Create an immutable backup of a file with timestamp.
+.SH OPTIONS
+.TP
+.B --project
+Specify project name (default: sigfile)
+.SH EXAMPLES
+.TP
+Create a backup:
+.B sigfile-cli backup src/scripts/cli.py
+.SH SEE ALSO
+.BR sigfile-cli (1),
+.BR sigfile-history (1)
+.SH AUTHOR
+SigFile Development Team 

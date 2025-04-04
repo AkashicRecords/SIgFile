@@ -1,0 +1,21 @@
+.TH SIGFILE-HANDOFF 1 "April 2024" "SigFile CLI" "User Commands"
+.SH NAME
+sigfile-cli handoff \- Generate a handoff document
+.SH SYNOPSIS
+.B sigfile-cli handoff
+\fICHAT_NAME\fR \fICHAT_ID\fR \fISUMMARY\fR \fINEXT_STEPS\fR [\fIOPTIONS\fR]
+.SH DESCRIPTION
+Generate a handoff document for a chat session with summary and next steps.
+.SH OPTIONS
+.TP
+.B --project
+Specify project name (default: sigfile)
+.SH EXAMPLES
+.TP
+Generate a handoff:
+.B sigfile-cli handoff "CLI Logging" "20240404" "Implemented logging" "Test logging system"
+.SH SEE ALSO
+.BR sigfile-cli (1),
+.BR sigfile-history (1)
+.SH AUTHOR
+SigFile Development Team 

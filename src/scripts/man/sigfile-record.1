@@ -1,0 +1,24 @@
+.TH SIGFILE-RECORD 1 "April 2024" "SigFile CLI" "User Commands"
+.SH NAME
+sigfile-cli record \- Record changes to files
+.SH SYNOPSIS
+.B sigfile-cli record
+\fIDESCRIPTION\fR \fIFILE1\fR [\fIFILE2\fR ...] [\fIOPTIONS\fR]
+.SH DESCRIPTION
+Record changes made to files with a description of what was changed.
+.SH OPTIONS
+.TP
+.B --project
+Specify project name (default: sigfile)
+.SH EXAMPLES
+.TP
+Record a single file change:
+.B sigfile-cli record "Fixed timestamp issue" src/scripts/track_change.py
+.TP
+Record multiple file changes:
+.B sigfile-cli record "Updated logging system" src/scripts/cli.py src/scripts/cli_logging.py
+.SH SEE ALSO
+.BR sigfile-cli (1),
+.BR sigfile-history (1)
+.SH AUTHOR
+SigFile Development Team 

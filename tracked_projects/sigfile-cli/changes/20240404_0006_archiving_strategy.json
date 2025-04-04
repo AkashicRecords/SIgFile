@@ -1,0 +1,40 @@
+{
+    "type": "decision",
+    "timestamp": "2024-04-04T13:00:00Z",
+    "author": "AI Assistant",
+    "description": "Implemented record archiving strategy to manage storage and maintain system performance",
+    "changes": [
+        {
+            "file": "tracked_projects/sigfile-cli/decisions/015_record_archiving_strategy.md",
+            "type": "created",
+            "description": "Created decision record for implementing record archiving strategy"
+        }
+    ],
+    "affected_files": [
+        "tracked_projects/sigfile-cli/decisions/015_record_archiving_strategy.md",
+        "src/scripts/storage/archive_manager.py",
+        "src/scripts/storage/compression.py",
+        "src/scripts/storage/index_manager.py",
+        "src/scripts/storage/recovery.py",
+        "src/scripts/models/record.py",
+        "tests/test_archive_manager.py"
+    ],
+    "dependencies": [],
+    "testing": {
+        "unit_tests": "pending",
+        "integration_tests": "pending",
+        "performance_tests": "pending"
+    },
+    "verification": {
+        "documentation": "complete",
+        "design_review": "passed",
+        "qa": "pending"
+    },
+    "next_steps": [
+        "Implement archive manager",
+        "Create compression system",
+        "Build index manager",
+        "Add recovery tools",
+        "Create monitoring system"
+    ]
+} 

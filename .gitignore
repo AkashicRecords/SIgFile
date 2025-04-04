@@ -65,9 +65,19 @@ wheels/
 venv/
 ENV/
 env/
-.env/
-sigfile/
-Sigfile/
+.env
 
 # Keep Directory Structure
-!config/settings/.gitkeep 
+!config/settings/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Local development
+*.local
+.env.local 

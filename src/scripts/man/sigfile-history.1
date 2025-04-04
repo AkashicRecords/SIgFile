@@ -1,0 +1,27 @@
+.TH SIGFILE-HISTORY 1 "April 2024" "SigFile CLI" "User Commands"
+.SH NAME
+sigfile-cli history \- Show change history
+.SH SYNOPSIS
+.B sigfile-cli history
+[\fIOPTIONS\fR]
+.SH DESCRIPTION
+Show the history of changes recorded for a project.
+.SH OPTIONS
+.TP
+.B --date
+Show history for specific date (YYYYMMDD)
+.TP
+.B --project
+Specify project name (default: sigfile)
+.SH EXAMPLES
+.TP
+Show today's history:
+.B sigfile-cli history
+.TP
+Show history for specific date:
+.B sigfile-cli history --date 20240404
+.SH SEE ALSO
+.BR sigfile-cli (1),
+.BR sigfile-record (1)
+.SH AUTHOR
+SigFile Development Team 

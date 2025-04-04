@@ -1,0 +1,23 @@
+# SigFile Project Structure
+
+## Changes
+Contains daily change records and change history
+
+## Backups
+Stores backup copies of changed files
+
+## Logs
+Contains system and change tracking logs
+
+## Docs
+Project documentation and file structure info
+
+## Ai_Conversations
+Stores AI interaction records
+
+## Thinking
+Contains AI thinking process records
+
+## Handoffs
+Stores handoff records between systems
+

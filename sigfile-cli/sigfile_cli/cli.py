@@ -1,6 +1,7 @@
 import os
 import sys
-import click
+from typing import Optional, Literal
+import typer
 from rich.console import Console
 from rich.prompt import Prompt
 from .utils.error_handling import handle_error
@@ -8,20 +9,16 @@ from .commands.decision import decision_command
 from .commands.devenv import devenv_command
 
 console = Console()
+app = typer.Typer(help="SigFile CLI - Developer Signature Tracking")
 
-@click.group()
-def cli():
-    """SigFile CLI - Developer Signature Tracking"""
-    pass
-
-@cli.command()
-@click.option('-n', '--new', is_flag=True, help='Create a new decision')
-@click.option('-t', '--title', help='Decision title')
-@click.option('-y', '--type', type=click.Choice(['architectural', 'implementation', 'security', 'performance', 'user_experience']), help='Type of decision')
-@click.option('-p', '--priority', type=click.Choice(['high', 'medium', 'low']), help='Priority of the decision')
-@click.option('-man', '--manual', is_flag=True, help='Show manual page')
-@handle_error
-def decision(new, title, type, priority, manual):
+@app.command()
+def decision(
+    new: bool = typer.Option(False, "--new", "-n", help="Create a new decision"),
+    title: Optional[str] = typer.Option(None, "--title", "-t", help="Decision title"),
+    type: Optional[Literal["architectural", "implementation", "security", "performance", "user_experience"]] = typer.Option(None, "--type", "-y", help="Type of decision"),
+    priority: Optional[Literal["high", "medium", "low"]] = typer.Option(None, "--priority", "-p", help="Priority of the decision"),
+    manual: bool = typer.Option(False, "--manual", "-man", help="Show manual page")
+):
     """Manage development decisions"""
     if manual:
         show_manual('decision')
@@ -54,19 +51,19 @@ def decision(new, title, type, priority, manual):
         # Command line mode
         if not all([new, title, type, priority]):
             console.print("[red]Error: All options are required in command line mode[/red]")
-            console.print("Try 'sigfile decision -man' for usage instructions")
+            console.print("Try 'sigfile decision --help' for usage instructions")
             sys.exit(1)
             
         filepath = decision_command.create_decision(title, type, priority)
         console.print(f"\nDecision saved to: {filepath}")
 
-@cli.command()
-@click.option('-r', '--role', type=click.Choice(['system', 'ai_agent', 'admin', 'user', 'all']), help='Role to modify')
-@click.option('-p', '--permission', type=click.Choice(['read', 'write', 'execute', 'immutable']), help='Permission to modify')
-@click.option('-a', '--action', type=click.Choice(['on', 'off']), help='Action to take')
-@click.option('-man', '--manual', is_flag=True, help='Show manual page')
-@handle_error
-def devenv(role, permission, action, manual):
+@app.command()
+def devenv(
+    role: Optional[Literal["system", "ai_agent", "admin", "user", "all"]] = typer.Option(None, "--role", "-r", help="Role to modify"),
+    permission: Optional[Literal["read", "write", "execute", "immutable"]] = typer.Option(None, "--permission", "-p", help="Permission to modify"),
+    action: Optional[Literal["on", "off"]] = typer.Option(None, "--action", "-a", help="Action to take"),
+    manual: bool = typer.Option(False, "--manual", "-man", help="Show manual page")
+):
     """Manage development environment"""
     if manual:
         show_manual('devenv')
@@ -99,21 +96,20 @@ def devenv(role, permission, action, manual):
         # Command line mode
         if not all([role, permission, action]):
             console.print("[red]Error: All options are required in command line mode[/red]")
-            console.print("Try 'sigfile devenv -man' for usage instructions")
+            console.print("Try 'sigfile devenv --help' for usage instructions")
             sys.exit(1)
             
         filepath = devenv_command.change_permission(role, permission, action)
         console.print(f"\nPermission change saved to: {filepath}")
 
-def show_manual(command):
-    """Display manual page for a command"""
-    manual_path = os.path.join(os.path.dirname(__file__), 'man', f'{command}.man')
-    try:
-        with open(manual_path, 'r') as f:
+def show_manual(command: str):
+    """Show manual page for a command"""
+    manual_path = os.path.join(os.path.dirname(__file__), "man", f"{command}.man")
+    if os.path.exists(manual_path):
+        with open(manual_path, "r") as f:
             console.print(f.read())
-    except FileNotFoundError:
-        console.print(f"[red]Manual page for {command} not found[/red]")
+    else:
+        console.print(f"[red]Manual page not found for command: {command}[/red]")
 
 def main():
-    """Main entry point"""
-    cli() 
+    app() 

@@ -1,0 +1,36 @@
+{
+  "metadata": {
+    "record_id": "debug_20240404_0001",
+    "record_type": "debug",
+    "timestamp": "2024-04-04T00:00:00Z",
+    "author": "AI Assistant",
+    "project": "sigfile-cli",
+    "version": "1.0",
+    "status": "in_progress",
+    "tags": ["tracking", "implementation", "debug"],
+    "related_records": [
+      "decision_011_comprehensive_record_tracking",
+      "change_20240404_0002"
+    ]
+  },
+  "content": {
+    "issue": "Tracking comprehensive development lifecycle",
+    "root_cause": "Need to implement automated tracking across entire development process",
+    "solution": "Implement phased approach with validation at each step",
+    "prevention": [
+      "Regular validation checks",
+      "Automated testing",
+      "Documentation updates",
+      "User feedback"
+    ],
+    "testing": "Manual testing of tracking features",
+    "documentation": "Updated implementation guide",
+    "affected_files": [
+      "src/scripts/models/development_tracker.py",
+      "src/scripts/models/vcs_integration.py",
+      "src/scripts/models/ci_cd_integration.py",
+      "src/scripts/models/release_manager.py",
+      "src/scripts/cli/tracking_commands.py"
+    ]
+  }
+} 

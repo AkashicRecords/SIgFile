@@ -1,0 +1,121 @@
+{
+  "metadata": {
+    "record_id": "string",                    // Unique identifier for the record
+    "record_type": "enum",                    // conversation | decision | change | debug
+    "timestamp": "ISO8601",                   // When the record was created
+    "version": "semver",                      // Version of the record format
+    "project": "string",                      // Project identifier
+    "participants": ["string"],               // People/AIs involved
+    "topics": ["string"],                     // Topics covered
+    "status": "enum",                         // draft | in_progress | completed | archived
+    "priority": "enum",                       // low | medium | high | critical
+    "related_records": [                      // Links to other related records
+      {
+        "record_id": "string",
+        "record_type": "enum",
+        "relationship": "enum"                // depends_on | related_to | blocks | blocked_by
+      }
+    ]
+  },
+  "content": {
+    // Content varies based on record_type
+    "conversation": {
+      "messages": [
+        {
+          "timestamp": "ISO8601",
+          "speaker": "string",
+          "message": "string",
+          "context": {
+            "files_referenced": ["string"],
+            "decisions_made": ["string"],
+            "code_changes": ["string"]
+          }
+        }
+      ]
+    },
+    "decision": {
+      "title": "string",
+      "description": "string",
+      "options": [
+        {
+          "id": "string",
+          "description": "string",
+          "pros": ["string"],
+          "cons": ["string"]
+        }
+      ],
+      "selected_option": "string",
+      "rationale": "string",
+      "impact": "string",
+      "implementation_plan": {
+        "short_term": ["string"],
+        "medium_term": ["string"],
+        "long_term": ["string"]
+      }
+    },
+    "change": {
+      "type": "enum",                         // create | modify | delete
+      "files": [
+        {
+          "path": "string",
+          "changes": "string",                // Diff or description
+          "before": "string",                 // Optional: previous state
+          "after": "string"                   // Optional: new state
+        }
+      ],
+      "dependencies": ["string"],
+      "testing_requirements": ["string"]
+    },
+    "debug": {
+      "issue": "string",
+      "environment": {
+        "os": "string",
+        "python_version": "string",
+        "dependencies": ["string"]
+      },
+      "steps_to_reproduce": ["string"],
+      "expected_behavior": "string",
+      "actual_behavior": "string",
+      "logs": [
+        {
+          "timestamp": "ISO8601",
+          "level": "enum",                    // debug | info | warning | error
+          "message": "string",
+          "context": "object"
+        }
+      ],
+      "resolution": "string"
+    }
+  },
+  "outcomes": {
+    "decisions": [
+      {
+        "id": "string",
+        "timestamp": "ISO8601",
+        "topic": "string",
+        "decision": "string",
+        "rationale": "string",
+        "related_files": ["string"]
+      }
+    ],
+    "code_changes": [
+      {
+        "id": "string",
+        "timestamp": "ISO8601",
+        "file": "string",
+        "type": "enum",                       // create | modify | delete
+        "description": "string",
+        "related_decisions": ["string"]
+      }
+    ],
+    "next_steps": [
+      {
+        "id": "string",
+        "description": "string",
+        "assigned_to": "string",
+        "due_date": "ISO8601",
+        "status": "enum"                      // pending | in_progress | completed | blocked
+      }
+    ]
+  }
+} 
