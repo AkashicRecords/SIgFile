@@ -5,7 +5,8 @@
 **Identifier**: shd101wyy.markdown-preview-enhanced  
 **Version**: 0.8.18  
 **Published**: 2017-06-12, 17:43:02  
-**Last Released**: 2025-03-16, 06:57:29
+**Last Released**: 2025-03-16, 06:57:29  
+**Dependencies**: SigFile-CLI (pip install SigFile-CLI)
 
 A Python tool for tracking development processes, including documentation review and updates.
 
@@ -19,10 +20,16 @@ SigFile is a development process tracking tool that helps teams manage documenta
 - Documentation tracking and versioning
 - Change tracking and logging
 - Cross-platform support (Windows, macOS, Linux)
+- CLI interface for easy command-line access
 
 ## Installation
 
-See the [Installation Guide](docs/getting-started/installation.md) for detailed setup instructions.
+1. Install the SigFile-CLI package:
+   ```zsh
+   pip install SigFile-CLI
+   ```
+
+2. See the [Installation Guide](docs/getting-started/installation.md) for detailed setup instructions.
 
 ## Usage
 
