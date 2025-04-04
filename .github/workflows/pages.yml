@@ -21,31 +21,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       
       - name: Setup Pages
         uses: actions/configure-pages@v3
       
-      - name: Clean website directory
-        run: |
-          mkdir -p website
-          rm -rf website/*
-          rm -f website/.nojekyll
-          rm -f website/_config.yml
-      
-      - name: Copy website files
-        run: |
-          cp -r src/website/* website/
-          touch website/.nojekyll
-      
-      - name: Verify website files
-        run: |
-          ls -la website/
-          [ -f website/index.html ] || exit 1
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./src/website
+          destination: ./_site
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'website'
+          path: ./_site
 
   deploy:
     environment:

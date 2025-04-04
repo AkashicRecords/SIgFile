@@ -16,4 +16,12 @@ exclude:
   - node_modules
   - vendor
   - .git
-  - .github 
+  - .github
+
+# Default front matter
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: "default" 
