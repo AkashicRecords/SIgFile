@@ -2,10 +2,10 @@
 
 import os
 import json
-import datetime
+import time
+from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional
-from collections import defaultdict
+from typing import Dict, List, Optional
 
 class AITracking:
     """Handles tracking and analysis of AI conversations."""
@@ -18,174 +18,116 @@ class AITracking:
             project_name: Name of the project to track
         """
         self.project_name = project_name
-        self.base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        self.conversations_dir = os.path.join(self.base_dir, "tracked_projects", project_name, "ai_conversations")
-        os.makedirs(self.conversations_dir, exist_ok=True)
+        self.base_dir = Path('tracked_projects') / project_name
+        self.ai_dir = self.base_dir / 'ai_conversations'
+        self.thinking_dir = self.base_dir / 'thinking'
+        
+        # Create directories if they don't exist
+        self.ai_dir.mkdir(parents=True, exist_ok=True)
+        self.thinking_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Initialize session tracking
+        self.current_session = None
+        self.session_start = None
+        self.session_data = []
     
-    def record_conversation(self, chat_id: str, messages: List[Dict[str, str]], code_changes: List[Dict[str, str]]) -> str:
-        """
-        Record an AI conversation with associated code changes.
+    def start_session(self, session_name: str, description: str) -> None:
+        """Start a new AI session."""
+        self.current_session = session_name
+        self.session_start = datetime.now()
+        self.session_data = []
         
-        Args:
-            chat_id: Unique identifier for the conversation
-            messages: List of message dictionaries with 'role' and 'content'
-            code_changes: List of code change dictionaries with 'file', 'type', and 'content'
-        
-        Returns:
-            Path to the saved conversation file
-        """
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        date = datetime.datetime.now().strftime("%Y-%m-%d")
-        
-        conversation_data = {
-            'chat_id': chat_id,
-            'project_name': self.project_name,
-            'timestamp': timestamp,
-            'date': date,
-            'messages': messages,
-            'code_changes': code_changes,
-            'summary': self._generate_summary(messages),
-            'key_decisions': self._extract_decisions(messages),
-            'common_topics': self._analyze_topics(messages),
-            'impact_areas': self._analyze_impact(messages, code_changes),
-            'next_steps': self._extract_next_steps(messages)
+        # Create session file
+        session_file = self.ai_dir / f"{session_name}_{self.session_start.strftime('%Y%m%d_%H%M%S')}.json"
+        initial_data = {
+            "session_name": session_name,
+            "description": description,
+            "start_time": self.session_start.isoformat(),
+            "events": []
         }
         
-        # Save conversation
-        conversation_file = os.path.join(
-            self.conversations_dir,
-            f"conversation_{chat_id}_{timestamp}.json"
-        )
-        with open(conversation_file, 'w') as f:
-            json.dump(conversation_data, f, indent=2)
+        with open(session_file, 'w') as f:
+            json.dump(initial_data, f, indent=2)
+
+    def end_session(self) -> None:
+        """End the current AI session."""
+        if not self.current_session:
+            return
         
-        return conversation_file
-    
-    def generate_dataset(self, format: str = "jsonl", include_code: bool = False) -> str:
-        """
-        Generate a dataset from recorded conversations.
+        end_time = datetime.now()
+        session_file = self.ai_dir / f"{self.current_session}_{self.session_start.strftime('%Y%m%d_%H%M%S')}.json"
         
-        Args:
-            format: Output format ('jsonl' or 'json')
-            include_code: Whether to include code changes in the dataset
-        
-        Returns:
-            Path to the generated dataset file
-        """
-        dataset = []
-        
-        # Collect all conversations
-        for conv_file in Path(self.conversations_dir).glob("conversation_*.json"):
-            with open(conv_file, 'r') as f:
-                conv_data = json.load(f)
+        if session_file.exists():
+            with open(session_file, 'r') as f:
+                data = json.load(f)
             
-            # Filter out code changes if not included
-            if not include_code:
-                conv_data.pop('code_changes', None)
+            data["end_time"] = end_time.isoformat()
+            data["duration_seconds"] = (end_time - self.session_start).total_seconds()
             
-            dataset.append(conv_data)
+            with open(session_file, 'w') as f:
+                json.dump(data, f, indent=2)
         
-        # Save dataset
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        dataset_file = os.path.join(
-            self.conversations_dir,
-            f"dataset_{timestamp}.{format}"
-        )
+        self.current_session = None
+        self.session_start = None
+        self.session_data = []
+
+    def record_event(self, event_type: str, content: Dict) -> None:
+        """Record an event in the current session."""
+        if not self.current_session:
+            return
         
-        if format == "jsonl":
-            with open(dataset_file, 'w') as f:
-                for item in dataset:
-                    f.write(json.dumps(item) + '\n')
-        else:
-            with open(dataset_file, 'w') as f:
-                json.dump(dataset, f, indent=2)
-        
-        return dataset_file
-    
-    def analyze_conversations(self) -> Dict[str, Any]:
-        """
-        Analyze all recorded conversations to extract insights.
-        
-        Returns:
-            Dictionary containing analysis results
-        """
-        analysis = {
-            'total_conversations': 0,
-            'total_messages': 0,
-            'common_topics': defaultdict(int),
-            'impact_areas': defaultdict(int),
-            'code_changes': {
-                'total': 0,
-                'by_type': defaultdict(int),
-                'by_file': defaultdict(int)
-            },
-            'decisions': {
-                'total': 0,
-                'by_type': defaultdict(int)
-            }
+        event = {
+            "timestamp": datetime.now().isoformat(),
+            "type": event_type,
+            "content": content
         }
         
-        # Analyze each conversation
-        for conv_file in Path(self.conversations_dir).glob("conversation_*.json"):
-            with open(conv_file, 'r') as f:
-                conv_data = json.load(f)
-            
-            analysis['total_conversations'] += 1
-            analysis['total_messages'] += len(conv_data.get('messages', []))
-            
-            # Analyze topics
-            for topic in conv_data.get('common_topics', []):
-                analysis['common_topics'][topic] += 1
-            
-            # Analyze impact areas
-            for area in conv_data.get('impact_areas', []):
-                analysis['impact_areas'][area] += 1
-            
-            # Analyze code changes
-            for change in conv_data.get('code_changes', []):
-                analysis['code_changes']['total'] += 1
-                analysis['code_changes']['by_type'][change.get('type', 'unknown')] += 1
-                analysis['code_changes']['by_file'][change.get('file', 'unknown')] += 1
-            
-            # Analyze decisions
-            decisions = conv_data.get('key_decisions', [])
-            analysis['decisions']['total'] += len(decisions)
-            for decision in decisions:
-                analysis['decisions']['by_type'][decision.get('type', 'unknown')] += 1
+        self.session_data.append(event)
         
-        # Convert defaultdicts to regular dicts for JSON serialization
-        analysis['common_topics'] = dict(analysis['common_topics'])
-        analysis['impact_areas'] = dict(analysis['impact_areas'])
-        analysis['code_changes']['by_type'] = dict(analysis['code_changes']['by_type'])
-        analysis['code_changes']['by_file'] = dict(analysis['code_changes']['by_file'])
-        analysis['decisions']['by_type'] = dict(analysis['decisions']['by_type'])
+        # Update session file
+        session_file = self.ai_dir / f"{self.current_session}_{self.session_start.strftime('%Y%m%d_%H%M%S')}.json"
+        if session_file.exists():
+            with open(session_file, 'r') as f:
+                data = json.load(f)
+            
+            data["events"].append(event)
+            
+            with open(session_file, 'w') as f:
+                json.dump(data, f, indent=2)
+
+    def record_thinking(self, thought: str, context: Optional[Dict] = None) -> None:
+        """Record a thinking process."""
+        timestamp = datetime.now()
+        thought_file = self.thinking_dir / f"thought_{timestamp.strftime('%Y%m%d_%H%M%S')}.json"
         
-        return analysis
-    
-    def _generate_summary(self, messages: List[Dict[str, str]]) -> str:
-        """Generate a summary of the conversation."""
-        # This is a placeholder for more sophisticated summarization
-        return "Conversation summary placeholder"
-    
-    def _extract_decisions(self, messages: List[Dict[str, str]]) -> List[Dict[str, str]]:
-        """Extract key decisions from the conversation."""
-        # This is a placeholder for more sophisticated decision extraction
-        return []
-    
-    def _analyze_topics(self, messages: List[Dict[str, str]]) -> List[str]:
-        """Analyze common topics in the conversation."""
-        # This is a placeholder for more sophisticated topic analysis
-        return []
-    
-    def _analyze_impact(self, messages: List[Dict[str, str]], code_changes: List[Dict[str, str]]) -> List[str]:
-        """Analyze impact areas of the conversation and code changes."""
-        # This is a placeholder for more sophisticated impact analysis
-        return []
-    
-    def _extract_next_steps(self, messages: List[Dict[str, str]]) -> List[str]:
-        """Extract next steps from the conversation."""
-        # This is a placeholder for more sophisticated next steps extraction
-        return []
+        thought_data = {
+            "timestamp": timestamp.isoformat(),
+            "thought": thought,
+            "context": context or {}
+        }
+        
+        with open(thought_file, 'w') as f:
+            json.dump(thought_data, f, indent=2)
+
+    def get_session_history(self, session_name: Optional[str] = None) -> List[Dict]:
+        """Get history of AI sessions."""
+        sessions = []
+        for file in self.ai_dir.glob("*.json"):
+            with open(file, 'r') as f:
+                data = json.load(f)
+                if session_name is None or data["session_name"] == session_name:
+                    sessions.append(data)
+        return sorted(sessions, key=lambda x: x["start_time"])
+
+    def get_thinking_history(self, limit: Optional[int] = None) -> List[Dict]:
+        """Get history of thinking processes."""
+        thoughts = []
+        for file in sorted(self.thinking_dir.glob("*.json"), reverse=True):
+            with open(file, 'r') as f:
+                thoughts.append(json.load(f))
+            if limit and len(thoughts) >= limit:
+                break
+        return thoughts
 
 def main():
     """Command line interface for AI tracking."""

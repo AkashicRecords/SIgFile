@@ -1,105 +1,50 @@
 # Installation Guide
 
-This guide covers the installation process for SigFile across different platforms and environments.
-
-## System Requirements
+## Prerequisites
 
 - Python 3.8 or higher
-- Operating System:
-  - Windows 10/11
-  - macOS 10.15+
-  - Linux (Ubuntu 20.04+, RHEL 8+)
-- Git (for version control integration)
+- pip (Python package installer)
+- Git (for version control)
 
 ## Installation Steps
 
-### 1. Clone the Repository
-
-```bash
+1. Clone the repository:
+```zsh
 git clone https://github.com/yourusername/sigfile.git
 cd sigfile
 ```
 
-### 2. Create a Virtual Environment (Recommended)
+2. Create and activate a virtual environment:
 
 #### Windows
 ```powershell
-python -m venv venv
-.\venv\Scripts\activate
+python -m venv Sigfile
+.\Sigfile\Scripts\activate
 ```
 
 #### macOS/Linux
-```bash
-python3 -m venv venv
-source venv/bin/activate
+```zsh
+python3 -m venv Sigfile
+source Sigfile/bin/activate
 ```
 
-### 3. Install Dependencies
-
-```bash
+3. Install dependencies:
+```zsh
 pip install -r requirements.txt
 ```
 
-### 4. Initialize SigFile
-
-```bash
-python src/scripts/track_change.py setup
-```
-
-## Platform-Specific Setup
-
-### Windows
-
-1. Install Python 3.8+ from [python.org](https://www.python.org/downloads/)
-2. Install Git from [git-scm.com](https://git-scm.com/download/win)
-3. Follow the general installation steps above
-
-### macOS
-
-1. Install Python using Homebrew:
-```bash
-brew install python@3.8
-```
-
-2. Install Git:
-```bash
-brew install git
-```
-
-3. Follow the general installation steps above
-
-### Linux (Ubuntu)
-
-1. Install Python and Git:
-```bash
-sudo apt update
-sudo apt install python3.8 python3.8-venv git
-```
-
-2. Follow the general installation steps above
-
-## Verification
-
-To verify your installation, run:
-
-```bash
+4. Verify the installation:
+```zsh
 python src/scripts/track_change.py --version
 ```
 
 ## Troubleshooting
 
-Common installation issues and solutions:
+If you encounter any issues during installation, please refer to the [Troubleshooting Guide](../troubleshooting/common-issues.md).
 
-1. **Python Version Issues**
-   - Ensure Python 3.8+ is installed
-   - Check with `python --version`
+## Next Steps
 
-2. **Dependencies Issues**
-   - Try updating pip: `pip install --upgrade pip`
-   - Install build tools: `pip install wheel setuptools`
-
-3. **Permission Issues**
-   - Use `sudo` on Linux/macOS if needed
-   - Run as administrator on Windows
-
-For more help, see the [Troubleshooting Guide](../troubleshooting/common-issues.md). 
+After successful installation, you can:
+- Configure your development environment
+- Start tracking changes in your projects
+- Review the [User Guide](../user-guide/README.md) for detailed usage instructions 

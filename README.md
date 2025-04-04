@@ -1,99 +1,57 @@
-# SigFile - AI Development Memory Keeper
+# SigFile
 
-> "In the digital age, your development history is your most valuable asset. SigFile helps you preserve it."
+A Python tool for tracking development processes, including documentation review and updates.
 
-SigFile is a Python-based tool designed to maintain a comprehensive record of your development process, including configuration changes, code modifications, and chat handoffs.
+## Project Information
 
-## Quick Links
-- [Documentation Index](docs/README.md)
-- [Installation Guide](docs/getting-started/installation.md)
-- [Basic Usage](docs/getting-started/basic-usage.md)
+**Identifier**: sigfile  
+**Version**: 1.0.0  
+**Published**: 2024-03-16, 12:00:00  
+**Last Released**: 2024-03-16, 12:00:00
 
-## Version Compatibility
-- Python: 3.8 or higher
-- Operating Systems:
-  - Windows 10/11
-  - macOS 10.15+
-  - Linux (Ubuntu 20.04+, RHEL 8+)
+## Description
 
-## Key Features
-- 🤖 **AI Development Tracking**: Capture and document AI-assisted development changes
-- 🔄 **Change Management**: Track and backup configuration changes
-- 📝 **Change History**: Maintain detailed history with timestamps
-- 📋 **Handoff Documentation**: Generate comprehensive handoff documents
-- 📁 **Project-Specific Tracking**: Support for multiple projects
-- 🌐 **Cross-Platform**: Works on any operating system
+SigFile is a development process tracking tool that helps teams manage documentation review and updates. It provides a structured way to track changes, manage handoffs, and maintain project documentation.
 
-## Use Cases
+## Features
 
-1. **Development Environments**
-   - Track IDE settings and configurations
-   - Monitor development environment changes
-   - Document tool-specific customizations
+- Virtual environment management with consistent naming
+- Documentation tracking and versioning
+- Change tracking and logging
+- Cross-platform support (Windows, macOS, Linux)
 
-2. **Project Management**
-   - Track project configuration changes
-   - Monitor dependency updates
-   - Document architectural decisions
+## Installation
 
-3. **System Administration**
-   - Track system configuration changes
-   - Monitor environment setup modifications
-   - Document infrastructure changes
+See the [Installation Guide](docs/getting-started/installation.md) for detailed setup instructions.
 
-4. **Documentation**
-   - Track documentation updates
-   - Monitor README changes
-   - Document API modifications
+## Usage
 
-## Quick Start
+1. Create and activate the virtual environment:
+   ```zsh
+   python3 -m venv Sigfile
+   source Sigfile/bin/activate
+   ```
 
-1. **Install**:
-```bash
-git clone https://github.com/yourusername/sigfile.git
-cd sigfile
-pip install -r requirements.txt
-```
+2. Install dependencies:
+   ```zsh
+   pip install -r requirements.txt
+   ```
 
-2. **Setup**:
-```bash
-python src/scripts/track_change.py setup
-```
-
-3. **Basic Usage**:
-```bash
-# Record a change
-python src/scripts/track_change.py record "description" "files_changed"
-
-# View history
-python src/scripts/track_change.py history
-
-# Create backup
-python src/scripts/track_change.py backup "path/to/file"
-```
-
-## Upcoming Features
-- 🧪 **Unit Testing**: Comprehensive test suite for core functionality
-- 🔍 **Enhanced AI Sessions**: Improved session tracking and analysis
-- 📊 **Analytics Dashboard**: Visual representation of development patterns
-- 🔄 **Real-time Change Detection**: Automatic change detection and recording
-- 🔐 **Enhanced Security**: Improved handling of sensitive data
-- 🔗 **Integration Capabilities**: Connect with other development tools
-- 📝 **Git Integration**: Track commits, pushes, and branch changes automatically
-
-## Next Steps
-1. Test current release thoroughly
-2. Fix any bugs or issues found
-3. Implement unit testing framework
-4. Enhance error handling and logging
-5. Improve documentation coverage
-6. Add basic security features
+3. Start tracking changes:
+   ```zsh
+   python src/scripts/track_change.py
+   ```
 
 ## Documentation
-For detailed documentation, please visit our [Documentation Index](docs/README.md).
+
+- [Installation Guide](docs/getting-started/installation.md)
+- [User Guide](docs/user-guide/README.md)
+- [Troubleshooting](docs/troubleshooting/common-issues.md)
 
 ## Contributing
-We welcome contributions! Please see our [Contributing Guide](docs/contributing/development.md) for details.
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ## License
+
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

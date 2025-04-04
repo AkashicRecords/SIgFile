@@ -10,6 +10,9 @@
 - [Change Management](features/change-management.md)
 - [Backup System](features/backup-system.md)
 - [Project Organization](features/project-organization.md)
+- [Permission System](features/permission-system.md)
+- [Permission Manager](features/permission-manager.md)
+- [Decision CLI](features/decision-cli.md)
 
 ## Advanced Usage
 - [AI Session Management](advanced/ai-sessions.md)

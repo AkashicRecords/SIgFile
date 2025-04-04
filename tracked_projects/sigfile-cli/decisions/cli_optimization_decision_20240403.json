@@ -1,0 +1,63 @@
+{
+  "title": "CLI Package Optimization and Structure",
+  "date": "2024-04-03",
+  "version": "0.1.0",
+  "summary": "Decision to optimize the SigFile CLI by creating a separate package with a base command class to reduce code redundancy and improve maintainability.",
+  "context": {
+    "problem": "The CLI implementation had redundant code across different commands, making it difficult to maintain and extend. Each command was implementing similar functionality for file operations, error handling, and validation.",
+    "solution": "Create a separate Python package for the CLI with a base command class that handles common operations. This approach centralizes common functionality and allows each command to focus on its specific logic.",
+    "impact": "This change improves code maintainability, reduces duplication, and makes it easier to add new commands in the future. It also ensures consistent behavior across all commands."
+  },
+  "changes": [
+    {
+      "file": "sigfile-cli/sigfile_cli/utils/base.py",
+      "description": "Created a BaseCommand class that handles common operations like file saving, validation, and record listing."
+    },
+    {
+      "file": "sigfile-cli/sigfile_cli/commands/decision.py",
+      "description": "Refactored the decision command to inherit from BaseCommand, reducing code duplication."
+    },
+    {
+      "file": "sigfile-cli/sigfile_cli/commands/devenv.py",
+      "description": "Refactored the devenv command to inherit from BaseCommand, reducing code duplication."
+    },
+    {
+      "file": "sigfile-cli/sigfile_cli/cli.py",
+      "description": "Updated the main CLI module to use the refactored command classes."
+    }
+  ],
+  "code_snippets": [
+    {
+      "description": "BaseCommand class with common functionality",
+      "original_code": "N/A - New implementation",
+      "modified_code": "class BaseCommand:\n    \"\"\"Base class for all CLI commands with common functionality\"\"\"\n    \n    def __init__(self, command_name: str):\n        self.command_name = command_name\n        self.storage_dir = command_name + 's'  # e.g., 'decisions', 'permissions'\n        \n    def save_record(self, data: Dict[str, Any], prefix: Optional[str] = None) -> str:\n        # Implementation details...",
+      "line_numbers": "1-20"
+    },
+    {
+      "description": "DecisionCommand class using BaseCommand",
+      "original_code": "def decision_command(title, type, priority):\n    # Implementation with duplicated code...",
+      "modified_code": "class DecisionCommand(BaseCommand):\n    \"\"\"Command for managing development decisions\"\"\"\n    \n    def __init__(self):\n        super().__init__('decision')\n        self.required_fields = ['title', 'type', 'priority']\n    \n    def create_decision(self, title: str, type: str, priority: str) -> str:\n        # Implementation using base class methods...",
+      "line_numbers": "1-20"
+    }
+  ],
+  "technical_details": {
+    "architecture": "The CLI is now structured as a separate Python package with a clear separation of concerns. The BaseCommand class provides common functionality, while specific command classes handle their unique logic.",
+    "implementation": "Each command inherits from BaseCommand and implements its specific methods. The main CLI module uses these command classes to handle user input and execute commands.",
+    "dependencies": "The CLI package depends on click for command-line interface, rich for terminal formatting, and gitpython for developer ID detection."
+  },
+  "usage_instructions": "To use the CLI, install it with pip: pip install sigfile-cli. Then use commands like 'sigfile decision -n -t \"Title\" -y architectural -p high' or 'sigfile decision' for interactive mode.",
+  "future_considerations": [
+    "Add more commands using the base class structure",
+    "Implement command history and undo functionality",
+    "Add support for command aliases",
+    "Enhance the interactive mode with more features"
+  ],
+  "related_documents": [
+    "docs/cli_usage.md",
+    "docs/developer_signature.md"
+  ],
+  "authors": [
+    "Sam Elder"
+  ],
+  "status": "implemented"
+} 

@@ -66,6 +66,8 @@ venv/
 ENV/
 env/
 .env/
+sigfile/
+Sigfile/
 
 # Keep Directory Structure
 !config/settings/.gitkeep 

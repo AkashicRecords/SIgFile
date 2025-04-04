@@ -1,0 +1,50 @@
+NAME
+    sigfile decision - Create and manage development decisions
+
+SYNOPSIS
+    sigfile decision [-n] -t TITLE -y TYPE -p PRIORITY
+    sigfile decision
+    sigfile decision -man
+
+DESCRIPTION
+    The decision command creates and manages development decisions. Each decision
+    is associated with a developer's signature and includes metadata about the
+    decision type and priority.
+
+OPTIONS
+    -n, --new
+        Create a new decision (required in command line mode)
+
+    -t, --title TITLE
+        The title of the decision (required)
+
+    -y, --type TYPE
+        The type of decision (required)
+        Choices: architectural, implementation, security, performance, user_experience
+
+    -p, --priority PRIORITY
+        The priority of the decision (required)
+        Choices: high, medium, low
+
+    -man, --manual
+        Show this manual page
+
+INTERACTIVE MODE
+    If no options are provided, the command enters interactive mode and prompts
+    for each required field. Press Ctrl+C at any time to cancel.
+
+EXAMPLES
+    Create a new decision:
+        sigfile decision -n -t "Implement caching" -y performance -p high
+
+    Interactive mode:
+        sigfile decision
+
+    View manual:
+        sigfile decision -man
+
+NOTES
+    - All options are required in command line mode
+    - Developer ID is automatically determined from git config or system login
+    - Decisions are stored in JSON format with timestamps
+    - Each decision is immutable once created 
