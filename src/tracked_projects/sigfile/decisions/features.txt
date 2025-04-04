@@ -1,0 +1,85 @@
+# Decision Recorder Feature List
+
+## Planned Features
+
+### 1. Reminder System for Undecided Decisions
+- **Description**: Alert developers when they're about to modify code that affects undecided decisions
+- **Implementation**:
+  - Monitor code changes in real-time
+  - Match changes against affected code snippets in undecided decisions
+  - Send notifications (email, IDE, terminal) when matches are found
+  - Provide quick links to update the decision status
+- **Priority**: High
+- **Status**: Planned
+
+### 2. Decision Impact Visualization
+- **Description**: Create visual representations of decision impacts
+- **Implementation**:
+  - Generate dependency graphs for affected code
+  - Show decision relationships and dependencies
+  - Highlight high-impact decisions
+- **Priority**: Medium
+- **Status**: Planned
+
+### 3. Decision Templates
+- **Description**: Provide templates for common decision types
+- **Implementation**:
+  - Create templates for technical, architectural, and process decisions
+  - Allow custom template creation
+  - Include standard sections based on decision type
+- **Priority**: Medium
+- **Status**: Planned
+
+### 4. Decision Search and Filtering
+- **Description**: Advanced search capabilities for decisions
+- **Implementation**:
+  - Search by content, status, date, or tags
+  - Filter by decision type, priority, or affected files
+  - Save and share search queries
+- **Priority**: Medium
+- **Status**: Planned
+
+### 5. Decision Review Workflow
+- **Description**: Structured process for reviewing and approving decisions
+- **Implementation**:
+  - Assign reviewers to decisions
+  - Track review status and comments
+  - Require approvals for status changes
+  - Integration with code review systems
+- **Priority**: Low
+- **Status**: Planned
+
+### 6. Decision Metrics and Reporting
+- **Description**: Generate insights about decision-making process
+- **Implementation**:
+  - Track time to decision
+  - Identify bottlenecks in decision process
+  - Generate reports on decision patterns
+  - Visualize decision history
+- **Priority**: Low
+- **Status**: Planned
+
+### 7. Integration with Version Control
+- **Description**: Link decisions to code commits
+- **Implementation**:
+  - Associate decisions with specific commits
+  - Track which commits implement which decisions
+  - Show decision context in code review
+- **Priority**: Medium
+- **Status**: Planned
+
+### 8. Decision Expiration and Review
+- **Description**: Automatically flag decisions for review after a period
+- **Implementation**:
+  - Set expiration dates for decisions
+  - Send reminders for expired decisions
+  - Require periodic review of long-standing decisions
+- **Priority**: Low
+- **Status**: Planned
+
+## Future Considerations
+- Integration with project management tools
+- AI-assisted decision analysis
+- Decision impact prediction
+- Collaborative decision-making features
+- Mobile interface for decision review 

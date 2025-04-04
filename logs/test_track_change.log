@@ -1,0 +1,61 @@
+2025-04-02 22:01:16,063 - test_track_change - INFO - 
+================================================================================
+Starting new test run
+================================================================================
+2025-04-02 22:01:16,065 - test_track_change - INFO - Test environment set up successfully
+2025-04-02 22:01:16,065 - test_track_change - INFO - Capture system working correctly
+2025-04-02 22:01:16,065 - test_track_change - INFO - Cleaning up test environment
+2025-04-02 22:01:16,066 - test_track_change - INFO - Test environment cleaned up successfully
+2025-04-02 22:01:16,071 - test_track_change - INFO - 
+================================================================================
+Starting new test run
+================================================================================
+2025-04-02 22:01:16,075 - test_track_change - INFO - Test environment set up successfully
+2025-04-02 22:01:16,078 - test_track_change - INFO - Cleaning up test environment
+2025-04-02 22:01:16,079 - test_track_change - INFO - Test environment cleaned up successfully
+2025-04-02 22:01:16,082 - test_track_change - INFO - 
+================================================================================
+Starting new test run
+================================================================================
+2025-04-02 22:01:16,085 - test_track_change - INFO - Test environment set up successfully
+2025-04-02 22:01:16,086 - test_track_change - INFO - Error handling working correctly
+2025-04-02 22:01:16,087 - test_track_change - INFO - Cleaning up test environment
+2025-04-02 22:01:16,089 - test_track_change - INFO - Test environment cleaned up successfully
+2025-04-02 22:01:16,093 - test_track_change - INFO - 
+================================================================================
+Starting new test run
+================================================================================
+2025-04-02 22:01:16,098 - test_track_change - INFO - Test environment set up successfully
+2025-04-02 22:01:16,102 - test_track_change - INFO - Cleaning up test environment
+2025-04-02 22:01:16,105 - test_track_change - INFO - Test environment cleaned up successfully
+2025-04-02 22:01:16,108 - test_track_change - INFO - 
+================================================================================
+Starting new test run
+================================================================================
+2025-04-02 22:01:16,118 - test_track_change - INFO - Test environment set up successfully
+2025-04-02 22:01:16,120 - test_track_change - INFO - Configuration directories created successfully
+2025-04-02 22:01:16,121 - test_track_change - INFO - Cleaning up test environment
+2025-04-02 22:01:16,122 - test_track_change - INFO - Test environment cleaned up successfully
+2025-04-02 22:01:16,131 - test_track_change - INFO - 
+================================================================================
+Starting new test run
+================================================================================
+2025-04-02 22:01:16,137 - test_track_change - INFO - Test environment set up successfully
+2025-04-02 22:01:16,138 - test_track_change - INFO - Timestamp generation working correctly
+2025-04-02 22:01:16,139 - test_track_change - INFO - Cleaning up test environment
+2025-04-02 22:01:16,139 - test_track_change - INFO - Test environment cleaned up successfully
+2025-04-02 22:01:16,144 - test_track_change - INFO - 
+================================================================================
+Starting new test run
+================================================================================
+2025-04-02 22:01:16,152 - test_track_change - INFO - Test environment set up successfully
+2025-04-02 22:01:16,157 - test_track_change - INFO - Cleaning up test environment
+2025-04-02 22:01:16,159 - test_track_change - INFO - Test environment cleaned up successfully
+2025-04-02 22:01:16,163 - test_track_change - INFO - 
+================================================================================
+Starting new test run
+================================================================================
+2025-04-02 22:01:16,168 - test_track_change - INFO - Test environment set up successfully
+2025-04-02 22:01:16,492 - test_track_change - INFO - History display working correctly
+2025-04-02 22:01:16,492 - test_track_change - INFO - Cleaning up test environment
+2025-04-02 22:01:16,494 - test_track_change - INFO - Test environment cleaned up successfully

@@ -1,0 +1,55 @@
+# Sigfile Project Decisions
+
+## 1. File Archiving System
+- Status: Undecided
+- Date: 20240319
+- Type: Technical
+- Priority: Medium
+- Context: Need to manage file growth and system performance for tracked changes
+- Options:
+  1. Immediate Implementation
+     - Pros: Early performance optimization
+     - Cons: Added complexity, may be premature
+  2. Delayed Implementation
+     - Pros: Focus on core functionality first
+     - Cons: Potential future performance issues
+  3. Hybrid Approach
+     - Pros: Balance immediate needs with future scalability
+     - Cons: More complex implementation
+- Current Decision: Pending
+- Rationale: Need more data on file growth patterns and stability of core functionality
+- Next Steps:
+  1. Monitor file growth patterns
+  2. Document usage scenarios
+  3. Revisit decision with more data
+  4. Consider alternative approaches
+- Tags: file-management, performance, storage, pending
+
+## 2. File Mutability System
+- Status: Decided
+- Date: 20240319
+- Type: Technical
+- Priority: High
+- Context: Need to protect certain files from modification while allowing others to be updated
+- Decision: Implement selective mutability
+- Implementation:
+  1. Backup files: Immutable after creation
+  2. Handoff files: Immutable after creation
+  3. Change files: Mutable until explicitly finalized
+- Rationale: Provides necessary protection while maintaining flexibility
+- Tags: file-protection, security, implementation
+
+## 3. Decision Tracking System
+- Status: Decided
+- Date: 20240319
+- Type: Process
+- Priority: High
+- Context: Need to track and document project decisions
+- Decision: Implement structured decision tracking
+- Implementation:
+  1. JSON-based decision records
+  2. Standardized format
+  3. Status tracking
+  4. Impact analysis
+- Rationale: Ensures decisions are properly documented and tracked
+- Tags: documentation, process, implementation 

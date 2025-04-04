@@ -1,0 +1,9 @@
+LICENSE
+README.md
+setup.py
+sigfile.egg-info/PKG-INFO
+sigfile.egg-info/SOURCES.txt
+sigfile.egg-info/dependency_links.txt
+sigfile.egg-info/requires.txt
+sigfile.egg-info/top_level.txt
+tests/test_capture_system.py

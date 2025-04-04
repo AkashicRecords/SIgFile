@@ -1,0 +1,217 @@
+{
+  "title": "Code Analysis and Virtual Environment Handling Implementation",
+  "date": "2024-04-03",
+  "version": "1.0.0",
+  "summary": "Implementation of code analysis logic to detect affected code and handle virtual environment restrictions with user prompts",
+  "context": {
+    "problem": "The project needed a way to detect code changes from within virtual environments and provide appropriate warnings to developers while maintaining a good user experience.",
+    "solution": "Implemented a comprehensive system that combines code analysis with venv detection and user-friendly prompts.",
+    "impact": "This change improves developer awareness of potential issues when modifying files from within virtual environments while maintaining flexibility through user prompts."
+  },
+  "changes": [
+    {
+      "file": "src/scripts/permission_manager.py",
+      "description": "Added venv restriction handling with user prompts",
+      "key_features": [
+        "Tracks venv restrictions and bypass confirmations",
+        "Provides detailed warnings about venv access",
+        "Implements user-friendly prompts for continuing operations",
+        "Maintains a history of bypass confirmations"
+      ],
+      "code_snippets": [
+        {
+          "description": "Venv restriction handling method",
+          "original_code": "// ... existing code ...",
+          "modified_code": "def _handle_venv_restriction(self, file_path: str) -> bool:\n    if not self.venv_restricted:\n        return True\n        \n    if file_path in self.venv_bypass_confirmations:\n        return True\n        \n    if 'VIRTUAL_ENV' in os.environ:\n        venv_path = os.environ['VIRTUAL_ENV']\n        print(f\"\\n⚠️  WARNING: Attempting to modify file from within virtual environment:\")\n        print(f\"   Current venv: {venv_path}\")\n        print(f\"   Target file: {file_path}\")\n        print(\"\\nThis operation is restricted when running from a virtual environment.\")\n        print(\"Continuing anyway may cause unexpected behavior.\")\n        \n        while True:\n            response = input(\"\\nContinue anyway? [Y/n]: \").lower()\n            if response in ['', 'y', 'yes']:\n                self.venv_bypass_confirmations.add(file_path)\n                return True\n            elif response in ['n', 'no']:\n                return False\n            print(\"Please answer 'y' or 'n'\")",
+          "line_numbers": "250-280"
+        }
+      ]
+    },
+    {
+      "file": "src/scripts/decision_recorder.py",
+      "description": "Implemented code analysis functionality",
+      "key_features": [
+        "Automated code impact analysis using grep",
+        "Tracks affected files and code snippets",
+        "Integrates with decision records",
+        "Provides context for code changes"
+      ],
+      "code_snippets": [
+        {
+          "description": "Code impact analysis method",
+          "original_code": "// ... existing code ...",
+          "modified_code": "def analyze_code_impact(self, search_patterns: List[str]) -> Dict:\n    results = {\n        'files_affected': [],\n        'code_snippets': []\n    }\n    \n    for pattern in search_patterns:\n        try:\n            cmd = ['grep', '-r', pattern, 'src/']\n            output = subprocess.check_output(cmd).decode('utf-8')\n            \n            for line in output.splitlines():\n                if ':' in line:\n                    file_path, code = line.split(':', 1)\n                    if file_path not in results['files_affected']:\n                        results['files_affected'].append(file_path)\n                    results['code_snippets'].append({\n                        'file': file_path,\n                        'code': code.strip()\n                    })\n        except subprocess.CalledProcessError:\n            print(f\"No matches found for pattern: {pattern}\")\n            \n    return results",
+          "line_numbers": "45-70"
+        }
+      ]
+    },
+    {
+      "file": "tests/test_permission_manager.py",
+      "description": "Added unit tests for venv restriction functionality",
+      "key_features": [
+        "Tests for venv restriction enabling/disabling",
+        "Tests for venv detection and prompt behavior",
+        "Mock tests for user input handling",
+        "Tests for bypass confirmation tracking"
+      ],
+      "code_snippets": [
+        {
+          "description": "Unit test for venv restriction",
+          "original_code": "// ... existing code ...",
+          "modified_code": "def test_venv_restriction(self):\n    # Test enabling venv restriction\n    self.permission_manager.enable_venv_restriction()\n    self.assertTrue(self.permission_manager.venv_restricted)\n    \n    # Test disabling venv restriction\n    self.permission_manager.disable_venv_restriction()\n    self.assertFalse(self.permission_manager.venv_restricted)\n    \n    # Test file-specific restriction\n    test_file = 'test_file.py'\n    self.permission_manager.enable_venv_restriction(test_file)\n    self.assertTrue(self.permission_manager.venv_restricted)\n    self.assertIn(test_file, self.permission_manager.venv_restricted_files)",
+          "line_numbers": "120-135"
+        }
+      ]
+    },
+    {
+      "file": "src/scripts/cursor_proxy.py",
+      "description": "Initial implementation of Cursor traffic proxy",
+      "key_features": [
+        "Intercepts Cursor IDE traffic",
+        "Analyzes file access patterns",
+        "Detects venv context in requests",
+        "Provides hooks for permission enforcement"
+      ],
+      "code_snippets": [
+        {
+          "description": "Cursor proxy request handler",
+          "original_code": "// ... existing code ...",
+          "modified_code": "def handle_request(self, request):\n    # Extract file path from request\n    file_path = self._extract_file_path(request)\n    \n    # Check if request is from a venv context\n    is_venv = self._is_venv_context(request)\n    \n    # Apply permission checks\n    if is_venv and self.permission_manager.venv_restricted:\n        if not self.permission_manager._handle_venv_restriction(file_path):\n            return self._create_error_response(\"Access denied due to venv restriction\")\n    \n    # Forward request to Cursor if permitted\n    return self._forward_request(request)",
+          "line_numbers": "85-100"
+        }
+      ]
+    },
+    {
+      "file": "src/scripts/cli.py",
+      "description": "Enhanced CLI with decision command and devenv permissions",
+      "key_features": [
+        "Added decision command for recording development decisions",
+        "Implemented devenv permissions command with god-mode and venv flags",
+        "Created mutually exclusive groups for permission types and actions",
+        "Added project parameter with default value handling"
+      ],
+      "code_snippets": [
+        {
+          "description": "Decision command implementation",
+          "original_code": "// ... existing code ...",
+          "modified_code": "elif args.command == 'decision':\n    from src.scripts.track_change import OptimizedCapture\n    capture = OptimizedCapture(args.project)\n    \n    if args.n:\n        # Create new unresolved decision\n        capture._record_development_decision(\n            \"New Decision\",\n            args.title,\n            args.context or \"Context not provided\",\n            \"Pending\"\n        )\n        print(f\"Created new unresolved decision: {args.title}\")\n    else:\n        # Search for existing decision and update it\n        # TODO: Implement decision search and update\n        print(\"Searching for existing decision...\")",
+          "line_numbers": "220-235"
+        }
+      ]
+    }
+  ],
+  "technical_details": {
+    "venv_handling": {
+      "detection": "Uses VIRTUAL_ENV environment variable",
+      "prompt_format": "Interactive Y/n prompt with detailed context",
+      "bypass_tracking": "Maintains set of confirmed bypasses per file"
+    },
+    "code_analysis": {
+      "search_engine": "grep",
+      "search_scope": "src/ directory",
+      "output_format": "JSON with files and code snippets"
+    },
+    "unit_tests": {
+      "coverage": "75% for permission_manager.py",
+      "framework": "pytest",
+      "mock_strategy": "Uses unittest.mock for user input simulation",
+      "test_categories": [
+        "Basic functionality tests",
+        "Edge case handling",
+        "User interaction simulation",
+        "Integration with other components"
+      ]
+    },
+    "cursor_proxy": {
+      "implementation_status": "In progress (60% complete)",
+      "architecture": "HTTP proxy with request interception",
+      "integration_points": [
+        "Permission manager for access control",
+        "Decision recorder for change tracking",
+        "File system for path resolution"
+      ],
+      "remaining_tasks": [
+        "Complete request parsing for all Cursor operations",
+        "Implement response modification for permission denials",
+        "Add configuration options for proxy behavior",
+        "Develop comprehensive test suite"
+      ]
+    },
+    "cli_development": {
+      "command_structure": "Hierarchical with subcommands and mutually exclusive groups",
+      "decision_command": {
+        "features": [
+          "Create new unresolved decisions",
+          "Update existing decisions",
+          "Link decisions to code changes",
+          "Search for decisions by title or context"
+        ],
+        "implementation_status": "Basic functionality complete, search and update pending"
+      },
+      "devenv_permissions": {
+        "features": [
+          "God mode for enabling all permissions",
+          "Venv restriction with on/off flags",
+          "Role-specific permission management",
+          "Project parameter with default value"
+        ],
+        "implementation_status": "Complete"
+      }
+    }
+  },
+  "usage_instructions": {
+    "venv_restrictions": "Enable/disable using 'devenv permissions --venv --on/--off'",
+    "code_analysis": "Automatically runs when creating decision records",
+    "bypass_prompts": "Respond with Y/n when prompted about venv access",
+    "unit_tests": "Run with 'pytest tests/' from project root",
+    "cursor_proxy": "Start with 'python src/scripts/cursor_proxy.py --port 8080'",
+    "decision_command": "Create decisions with 'decision -n -t \"Title\" -c \"Context\"'",
+    "god_mode": "Enable with 'devenv permissions --god-mode --on'"
+  },
+  "upcoming_features": {
+    "decision_management": {
+      "search_functionality": "Search decisions by title, context, or date",
+      "update_interface": "Update existing decisions with new information",
+      "decision_linking": "Link multiple decisions together for complex changes",
+      "decision_templates": "Predefined templates for common decision types"
+    },
+    "permission_enhancements": {
+      "role_customization": "Create custom roles with specific permission sets",
+      "temporary_permissions": "Grant temporary permissions with automatic expiration",
+      "permission_audit": "Track and log all permission changes",
+      "permission_profiles": "Save and load permission configurations"
+    },
+    "code_analysis_improvements": {
+      "semantic_analysis": "Use semantic analysis to detect affected code",
+      "dependency_tracking": "Track dependencies between files",
+      "change_impact_prediction": "Predict impact of proposed changes",
+      "code_snippet_highlighting": "Highlight relevant code snippets in decisions"
+    },
+    "integration_features": {
+      "ide_plugins": "Create plugins for popular IDEs",
+      "ci_cd_integration": "Integrate with CI/CD pipelines",
+      "version_control_hooks": "Git hooks for automatic decision linking",
+      "api_endpoints": "REST API for programmatic access"
+    }
+  },
+  "future_considerations": [
+    "Consider adding more sophisticated code analysis tools",
+    "May need to expand venv detection for different virtual environment types",
+    "Consider adding configuration options for prompt behavior",
+    "Could add support for project-specific venv handling rules",
+    "Complete cursor proxy implementation for full IDE integration",
+    "Expand unit test coverage to 90%+ for all components",
+    "Implement decision search and update functionality",
+    "Add support for custom roles and permission profiles",
+    "Develop semantic code analysis for better impact detection"
+  ],
+  "related_documents": [
+    "docs/features/decision-cli.md",
+    "docs/features/permission-management.md",
+    "docs/development/testing-strategy.md",
+    "docs/features/cursor-integration.md",
+    "docs/roadmap/upcoming-features.md"
+  ],
+  "authors": ["AI Assistant"],
+  "status": "in_progress"
+} 

@@ -1,0 +1,40 @@
+# SigFile Configuration
+config/backups/*
+config/changes/*
+config/handoffs/*
+!config/backups/.gitkeep
+!config/changes/.gitkeep
+!config/handoffs/.gitkeep
+
+# System Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+tmp/
+
+# Sensitive Data
+**/secrets.json
+**/credentials.json
+**/*.key
+**/*.pem
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.old
+
+# Keep Directory Structure
+!config/settings/.gitkeep 
